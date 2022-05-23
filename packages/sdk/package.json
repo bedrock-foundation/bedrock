@@ -1,0 +1,71 @@
+{
+    "name": "@bedrock-foundation/sdk",
+    "version": "0.0.4",
+    "description": "Bedrock SDK",
+    "private": false,
+    "publishConfig": {
+        "access": "public"
+    },
+    "type": "module",
+    "sideEffects": false,
+    "main": "lib/cjs/index.js",
+    "module": "lib/esm/index.mjs",
+    "types": "lib/types/index.d.ts",
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
+    "directories": {
+        "test": "test"
+    },
+    "exports": {
+        "import": "./lib/esm/index.mjs",
+        "require": "./lib/cjs/index.js"
+    },
+    "scripts": {
+        "watch": "npm run build",
+        "dev": "npm-watch watch",
+        "clean": "rm -rf lib/*",
+        "build": "npm run clean && tsc -p tsconfig.json && tsc-esm -p tsconfig.json && tsc -p tsconfig.cjs.json",
+        "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > lib/esm/package.json"
+    },
+    "watch": {
+        "watch": {
+            "patterns": [
+                "src"
+            ],
+            "quiet": false,
+            "legacyWatch": true,
+            "extensions": "ts, js, tsx"
+        }
+    },
+    "author": "samheutmaker@gmail.com",
+    "license": "ISC",
+    "dependencies": {
+        "@metaplex-foundation/mpl-token-metadata": "^2.1.0",
+        "@solana/pay": "^0.2.0",
+        "@solana/spl-token": "^0.2.0",
+        "@solana/web3.js": "1.36.0",
+        "bignumber.js": "^9.0.2",
+        "chai": "^4.3.4",
+        "chai-http": "^4.3.0",
+        "dotenv": "^8.2.0",
+        "fs-extra": "^8.1.0",
+        "joi": "^17.4.0",
+        "mocha": "^10.0.0"
+    },
+    "devDependencies": {
+        "@types/chai": "^4.2.3",
+        "@types/fs-extra": "^8.1.2",
+        "@types/long": "^3.0.32",
+        "@types/mocha": "^2.2.44",
+        "@types/node": "^17.0.34",
+        "npm-watch": "^0.11.0",
+        "ts-loader": "^5.4.5",
+        "ts-node-dev": "^1.1.8",
+        "typescript": "^4.6.4",
+        "typescript-esm": "^2.0.0"
+    },
+    "gitHead": "e27c545ce4af8a6c467bad92c75a585ccc73f0bb"
+}

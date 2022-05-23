@@ -1,0 +1,27 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "inlineSourceMap": true,
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "target": "es6",
+    "esModuleInterop": true,
+    "lib": ["esnext", "DOM"],
+    "module": "commonjs",
+    "outDir": "./lib/",
+    "declaration": true,
+    "jsx": "react",
+    "allowJs": true,
+    "noUnusedLocals": false,
+    "paths": {},
+    "types": [
+      "node",
+      "long",
+      "mocha"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    ],
+  "exclude": ["node_modules", "lib/*"],
+}

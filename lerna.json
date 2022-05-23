@@ -1,0 +1,9 @@
+{
+  "packages": [
+    "packages/example/express",
+    "packages/example/nextjs",
+    "packages/sdk",
+    "packages/server"
+  ],
+  "version": "0.0.4"
+}

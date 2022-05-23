@@ -1,0 +1,8 @@
+node_modules/
+**/.dist/
+**/secrets/**/decrypted
+**/charts/magically/secrets
+.DS_Store
+.vscode
+lerna-debug.log
+**/db
