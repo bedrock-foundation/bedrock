@@ -2,6 +2,7 @@
   "packages": [
     "packages/example/express",
     "packages/example/nextjs",
+    "packages/marketing",
     "packages/sdk",
     "packages/server"
   ],
