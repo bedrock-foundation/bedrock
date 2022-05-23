@@ -1,3 +1,4 @@
+# Bedrock
 Bedrock is a suite of tools for Solana Pay that:
 
 - Standardizes the methodology used to create transaction requests
