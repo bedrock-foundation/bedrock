@@ -28,7 +28,7 @@ $ lerna run dev --parallel
 We have a few channels for contact:
 
 - [Discord](https://discord.gg/on_bedrock)
-- [@onbedrock](https://twitter.com/on_bedrock) on Twitter
+- [@on_bedrock](https://twitter.com/on_bedrock) on Twitter
 - [GitHub Issues](https://github.com/bedrock-foundation/bedrock/issues)
 
 
