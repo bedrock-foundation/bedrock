@@ -4,6 +4,7 @@ Bedrock is a suite of tools for Solana Pay that:
 - Standardizes the methodology used to create transaction requests
 - Provides implementations for many popular on-chain programs (SystemProgram, SPL, and others)
 - Provides tools to write custom Solana Pay programs
+- Provides client-side SDK's in many popular programming languages
 
 Bedrock is comprised of two core components: a server-side HTTP server, and a client-side SDK. 
 
