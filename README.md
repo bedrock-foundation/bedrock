@@ -12,16 +12,40 @@ Bedrock is comprised of two core components: a server-side HTTP server, and a cl
 
 You can check out our docs at https://docs.bedrock.fyi/
 
-## Installing
+## Quickstart Guide
 
-Clone the repo, and run `yarn start` to deploy.
+### Installing
 
+Install the SDK in your project via NPM.
 ```bash
-$ git clone https://github.com/bedrock-foundation/bedrock.git
-$ cd bedrock
-$ lerna bootstrap
-$ lerna run dev --parallel
+$ npm install --save @bedrock-foundation/sdk
 ```
+
+### Usage
+In your front-end or back-end, import and initalize the SDK.
+```ts
+import {
+  Bedrock, TokenTypes, TransferParams,
+} from '@bedrock-foundation/sdk';
+
+const { transfer } = new Bedrock();
+```
+Create a transfer link and get a referene to track the transaction later
+```.ts
+const [transferParams] = React.useState<TransferParams>({
+  wallet: 'Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx',
+  size: 1,
+  payerToken: TokenTypes.USDC,
+});
+
+const { link, res }: { string, string }transfer.createLink(transferParams)
+```
+
+
+
+
+
+
 
 ## Community
 
