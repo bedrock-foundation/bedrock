@@ -23,7 +23,7 @@
             "extensions": "ts, js, tsx"
         }
     },
-    "author": "samheutmaker@gmail.com",
+    "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
         "@bedrock-foundation/sdk": "^0.0.4",

@@ -6,43 +6,42 @@ import {
   Transaction,
 } from '@solana/web3.js';
 import {
-  TransferAction,
-  TransferParams,
-  TransferActionParams,
-  TransferDeliveryResponse,
+  PollReferenceStatus,
+  PollReferenceStatusParams,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
   TokenTypes,
   TokenInfo,
+  RefStatusResult,
 } from '@bedrock-foundation/sdk';
 import express, { Request, Response } from 'express';
 import RPCConnection from '../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../utils/SolanaUtil';
-import { ActionRouter, BaseRouter, ActionRouterParams } from '../models/BaseRouter';
 
-const transfer = new TransferAction();
+const pollReference = new PollReferenceStatus();
 
-export class TransferRouter extends BaseRouter implements ActionRouter<TransferActionParams> {
-  constructor(params: ActionRouterParams = {}) {
-    super(params);
-    this.path = transfer.path;
+export class PollReferenceStatusRouter {
+  public router: express.Router;
+
+  public path: string;
+
+  constructor() {
+    this.path = pollReference.path;
     this.router = express.Router();
-    this.router.get(this.path, super.get.bind(this));
-    this.router.post(this.path, this.post.bind(this));
+    this.router.get(this.path, this.get.bind(this));
   }
 
-  async post(req: Request<{}, {}, { account: string }, TransferParams>, res: Response): Promise<void> {
-    const { account } = req.body;
+  async get(req: Request<{}, {}, {}, PollReferenceStatusParams>, res: Response): Promise<void> {
+    const { params } = req.query;
+
+    const request = {
+      params,
+    };
+
+    const response = await this.status(request);
 
     try {
-      const request: TransferActionParams = {
-        account,
-        params: req.query,
-      };
-
-      const response = await this.createTransaction(request);
-
       if (!ErrorUtil.isSuccessfulResponse(response)) {
         throw new Error(response?.error?.message);
       }
@@ -52,7 +51,7 @@ export class TransferRouter extends BaseRouter implements ActionRouter<TransferA
         message: 'Thank you!',
       });
     } catch (e: any) {
-      this.logger.error(e);
+      // this.logger.error(e);
       res.status(StatusCodes.BAD_REQUEST).send({
         transaction: null,
         message: e.message,
@@ -60,12 +59,12 @@ export class TransferRouter extends BaseRouter implements ActionRouter<TransferA
     }
   }
 
-  async createTransaction(request: TransferActionParams): Promise<TransferDeliveryResponse> {
+  async status(request: PollReferenceStatusParams): Promise<RefStatusResult> {
     const response: TransferDeliveryResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = transfer.validateDelivery(
+    const { value, errors } = pollRefStatus.validate(
       request,
     );
 

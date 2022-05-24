@@ -1,6 +1,8 @@
 import Joi from 'joi';
-import { Keypair } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 import { encodeURL } from '@solana/pay';
+import base58 from 'bs58';
+import { sha256 } from '@ethersproject/sha2';
 import * as JoiUtil from '../utils/JoiUtil';
 import {
   Action, ActionParams, CreateLinkResult, DeliveryResponse,
@@ -37,6 +39,8 @@ export const transferDeliverySchema = Joi.object().keys({
   abortEarly: false,
 });
 
+const BEDROCK_PUBLIC_KEY = new PublicKey('9KiZ7j5BAh5zTs5AaoPnPKotWPj9ZSkxo6Dm9s88DKnT');
+
 export class TransferAction implements Action<TransferParams, TransferActionParams> {
   public readonly path: string = '/transfer';
 
@@ -47,9 +51,9 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
   }
 
   createLink(params: TransferParams): CreateLinkResult {
-    const ref = Keypair.generate().publicKey.toBase58();
+    const requestRef = Keypair.generate().publicKey.toBase58();
     const url = (() => {
-      let result = `${this.basePath}${this.path}?wallet=${params.wallet}&payerToken=${params.payerToken}&ref=${ref}`;
+      let result = `${this.basePath}${this.path}?wallet=${params.wallet}&payerToken=${params.payerToken}`;
       if (params.quantity) {
         result += `&quantity=${params.quantity}`;
       } else {
@@ -57,12 +61,24 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
       }
       return result;
     })();
+    const paramBuffer = Buffer.from(base58.encode(Buffer.from(url)));
+    const finalBuffer = Buffer.concat([BEDROCK_PUBLIC_KEY.toBuffer(), paramBuffer]);
+    const hash = sha256(new Uint8Array(finalBuffer)).slice(2);
+    const paramsRef = new PublicKey(Buffer.from(hash, 'hex')).toBase58();
+    const bedrockRef = BEDROCK_PUBLIC_KEY.toBase58();
+    const urlWithRefs = `${url}&requestRef=${requestRef}&paramsRef=${paramsRef}&bedrockRef=${bedrockRef}`;
+    const link = encodeURL({ link: new URL(urlWithRefs) }).toString();
 
-    const link = encodeURL({ link: new URL(url) }).toString();
+    console.log(link);
 
     return {
       link,
-      ref,
+      refs: {
+        requestRef,
+        paramsRef,
+        bedrockRef,
+      },
+
     };
   }
 
