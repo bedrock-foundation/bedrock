@@ -31,6 +31,12 @@ const HoverLink = styled(Link)`
   }
 `;
 
+const GitHubLink = styled.a`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 type ImageContainerProps = {
   width: string;
 };
@@ -53,19 +59,25 @@ const BedrockLogo = styled(ImageContainer)`
 const BedrockLogoWide = styled(ImageContainer)`
   width: 250px;
   margin-left: 16px;
+
+  @media screen and (max-width: ${Breakpoint}) {
+    display: none;
+  }
 `;
 
 const ImageContainerGitHub = styled(ImageContainer)`
   top: -2px;
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
+  margin-right: 24px;
 
   @media screen and (max-width: ${Breakpoint}) {
-    flex-direction: column;
-    width: 100%;
+   top: 0px;
+  }
+`;
+
+const Row = styled.div<{ align?: string }>`
+  display: flex;
+  flex-direction: row;
+  justify-items: ${(props) => props.align};
   }
 `;
 
@@ -85,20 +97,19 @@ const Navigation: React.FC<NavigationProps> = () => {
           </BedrockLogoWide>
         </Row>
       </HoverLink>
-      <Row>
-        <a
-          href="https://github.com/bedrock-foundation"
-          style={{ marginRight: '32px' }}
-        >
-          <ImageContainerGitHub width="30px">
+      <Row align="flex-end">
+
+        <ImageContainerGitHub width="30px">
+          <GitHubLink href="https://github.com/bedrock-foundation">
             <NextImage src={GitHub} objectFit="contain" />
-          </ImageContainerGitHub>
-        </a>
-        <a href="https://twitter.com/on_bedrock">
-          <ImageContainer width="30px">
+          </GitHubLink>
+        </ImageContainerGitHub>
+
+        <ImageContainer width="30px">
+          <a href="https://twitter.com/on_bedrock">
             <NextImage src={TwitterWhite} objectFit="contain" />
-          </ImageContainer>
-        </a>
+          </a>
+        </ImageContainer>
       </Row>
     </Container>
   );

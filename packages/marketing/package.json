@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "ENVIRONMENT_NAME=dev PORT=3002 next dev",
         "build": "next build",
+        "start": "next start",
         "test": "echo 'no tests defined for web package'"
     },
     "dependencies": {

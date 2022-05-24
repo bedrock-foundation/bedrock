@@ -1,4 +1,3 @@
-/* eslint-disable react/no-danger */
 import React from 'react';
 import Document, {
   Html,
@@ -6,7 +5,6 @@ import Document, {
   Main,
   NextScript,
 } from 'next/document';
-import { PAY_PORTAL_URL } from '../env';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
