@@ -8,9 +8,13 @@ Bedrock is a suite of tools for Solana Pay that:
 
 Bedrock is comprised of two core components: a server-side HTTP server, and a client-side SDK. 
 
-## Official Bedrock Docs and Guide
+## Official Bedrock Docs and Guides
 
-You can check out our docs at https://docs.bedrock.fyi/
+[Bedrock Official Dcumentation](https://docs.bedrock.fyi): 
+[Solana Pay Documentation](https://docs.solanapay.com/)
+
+[Solana Pay Specification](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#specification-transaction-request)
+
 
 ## Quickstart Guide
 
