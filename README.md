@@ -1,3 +1,9 @@
+<p>
+  <a href="https://bedrock.fyi">
+    <img alt="Bedrock Foundation" src="packages/marketing/public/bedrock-logo.png" style="background: black; padding: 10px" width="100" />
+  </a>
+</p>
+
 # Bedrock
 Bedrock is a suite of tools for Solana Pay that:
 
