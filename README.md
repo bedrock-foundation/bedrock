@@ -10,10 +10,11 @@ Bedrock is comprised of two core components: a server-side HTTP server, and a cl
 
 ## Official Bedrock Docs and Guides
 
-[Bedrock Official Dcumentation](https://docs.bedrock.fyi): 
-[Solana Pay Documentation](https://docs.solanapay.com/)
+- [Bedrock Official Dcumentation](https://docs.bedrock.fyi)
+- [Solana Pay Documentation](https://docs.solanapay.com/)
+- [Solana Pay Transaction Request Spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#specification-transaction-request)
 
-[Solana Pay Specification](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#specification-transaction-request)
+NOTE: It is a good idea to familiarize yourself with the concepts described in the [Solana Pay Transaction Request Spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#specification-transaction-request) before reading on.
 
 
 ## Quickstart Guide
@@ -34,7 +35,7 @@ import {
 
 const { transfer } = new Bedrock();
 ```
-Create a transfer link and get a referene to track the transaction later
+Create a transfer request link and get a referene to track the transaction later. In this example, we are transfering 1 USDC from the initiating wallet to the public key represents by the wallet parameter.
 ```.ts
 const [transferParams] = React.useState<TransferParams>({
   wallet: 'Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx',
@@ -42,14 +43,9 @@ const [transferParams] = React.useState<TransferParams>({
   payerToken: TokenTypes.USDC,
 });
 
-const { link, res }: { string, string }transfer.createLink(transferParams)
+const { link, res }: { string, string } = transfer.createLink(transferParams)
 ```
-
-
-
-
-
-
+The link returned is a string representing a Solana Pay Transaction Request HTTP endpoint on the Bedrock servers.
 
 ## Community
 
