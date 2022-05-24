@@ -145,7 +145,7 @@ const IndexPage: React.FC<IndexPageProps> = () => {
                 color={Colors.Purple}
                 onClick={() => {
                   window.open(
-                    'https://calendly.com/sam-loyal/15-minute-meeting',
+                    'https://calendly.com/on_bedrock/15-minute-meeting',
                   );
                 }}
               >
