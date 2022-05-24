@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import Document, {
   Html,
@@ -5,7 +6,6 @@ import Document, {
   Main,
   NextScript,
 } from 'next/document';
-import Script from 'next/script';
 import { GA_MEASUREMENT_ID } from '../env';
 
 class MyDocument extends Document {
@@ -24,20 +24,21 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Pacifico&display=swap"
             rel="stylesheet"
           />
-          {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}
-          <Script
+          <script
+            async
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-            strategy="afterInteractive"
           />
-          <Script id="google-analytics" strategy="afterInteractive">
-            {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
 
-          gtag('config', '${GA_MEASUREMENT_ID}');
-        `}
-          </Script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}', { page_path: window.location.pathname });
+            `,
+            }}
+          />
         </Head>
         <body>
           <Main />
