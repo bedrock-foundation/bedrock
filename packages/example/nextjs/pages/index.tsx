@@ -19,8 +19,6 @@ const Home: NextPage = () => {
 
   const [{ link, ref }] = React.useState(transfer.createLink(transferParams));
 
-  console.log(link);
-
   return (
     <div className={styles.container}>
       <Head>

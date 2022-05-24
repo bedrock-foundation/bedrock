@@ -134,7 +134,7 @@ const IndexPage: React.FC<IndexPageProps> = () => {
               <Button
                 color={Colors.Purple}
                 onClick={() => {
-                  window.open('https://github.com/bedrock-foundation');
+                  window.open('https://github.com/bedrock-foundation/bedrock');
                 }}
               >
                 <Text type={TextTypesEnum.Medium16} color={Colors.White}>

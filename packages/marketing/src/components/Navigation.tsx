@@ -98,9 +98,8 @@ const Navigation: React.FC<NavigationProps> = () => {
         </Row>
       </HoverLink>
       <Row align="flex-end">
-
         <ImageContainerGitHub width="30px">
-          <GitHubLink href="https://github.com/bedrock-foundation">
+          <GitHubLink href="https://github.com/bedrock-foundation/bedrock">
             <NextImage src={GitHub} objectFit="contain" />
           </GitHubLink>
         </ImageContainerGitHub>
