@@ -1,3 +1,3 @@
 export * from './models/BaseRouter';
-export * from './routers/transfer.router';
-export * from './routers/emptyWallet.router';
+export * from './routers/transferRouter';
+export * from './routers/emptyWalletRouter.ts';
