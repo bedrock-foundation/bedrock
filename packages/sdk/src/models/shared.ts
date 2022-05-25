@@ -43,9 +43,15 @@ export interface DeliveryResponse {
   status: StatusCodes;
 }
 
+export interface CreateLinkRefs {
+  requestRef: string;
+  paramsRef?: string;
+  bedrockRef?: string;
+}
+
 export interface CreateLinkResult {
   link: string;
-  ref: string;
+  refs: CreateLinkRefs;
 }
 
 export interface ActionParams<T> {

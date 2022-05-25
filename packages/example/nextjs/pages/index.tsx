@@ -8,7 +8,7 @@ import {
 import QRCode from 'react-qr-code';
 import styles from '../styles/Home.module.css';
 
-const { transfer } = new Bedrock('http://localhost:3001');
+const { transfer, pollRefStatus } = new Bedrock('http://localhost:3001');
 
 const Home: NextPage = () => {
   const [transferParams] = React.useState<TransferParams>({
@@ -17,7 +17,17 @@ const Home: NextPage = () => {
     payerToken: TokenTypes.USDC,
   });
 
-  const [{ link, ref }] = React.useState(transfer.createLink(transferParams));
+  const [{ link, refs: { requestRef } }] = React.useState(transfer.createLink(transferParams));
+
+  React.useEffect(() => {
+    const doEffect = async () => {
+      const { signature } = await pollRefStatus(requestRef);
+      console.log(signature);
+    };
+    doEffect();
+  }, [requestRef]);
+
+  console.log(requestRef);
 
   return (
     <div className={styles.container}>

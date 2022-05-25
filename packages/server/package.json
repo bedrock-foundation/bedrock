@@ -30,7 +30,17 @@
         "build": "npm run clean && tsc -p tsconfig.json && tsc-esm -p tsconfig.json && tsc -p tsconfig.cjs.json",
         "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > lib/esm/package.json"
     },
-    "author": "samheutmaker@gmail.com",
+    "watch": {
+        "watch": {
+            "patterns": [
+                "src"
+            ],
+            "quiet": false,
+            "legacyWatch": true,
+            "extensions": "ts, js, tsx"
+        }
+    },
+    "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
         "@bedrock-foundation/sdk": "^0.0.4",

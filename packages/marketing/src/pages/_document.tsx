@@ -24,11 +24,11 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Pacifico&display=swap"
             rel="stylesheet"
           />
+          {/* Load in GA */}
           <script
             async
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
           />
-
           <script
             dangerouslySetInnerHTML={{
               __html: `

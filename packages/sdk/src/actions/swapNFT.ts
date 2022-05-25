@@ -31,14 +31,17 @@ export class SwapNFTAction implements Action<SwapNFTParams, SwapNFTActionParams>
   }
 
   createLink(_params: SwapNFTParams): CreateLinkResult {
-    const ref = Keypair.generate().publicKey.toBase58();
+    const requestRef = Keypair.generate().publicKey.toBase58();
     const url = `${this.basePath}${this.path}`;
 
-    const link = encodeURL({ link: new URL(url) }).toString();
+    const urlWithRefs = `${url}&requestRef=${requestRef}`;
+    const link = encodeURL({ link: new URL(urlWithRefs) }).toString();
 
     return {
       link,
-      ref,
+      refs: {
+        requestRef,
+      },
     };
   }
 
