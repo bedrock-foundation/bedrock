@@ -15,13 +15,13 @@ import {
 } from '@bedrock-foundation/sdk';
 import * as spl from '@solana/spl-token';
 import express, { Request, Response } from 'express';
-import RPCConnection from '../utils/RPCConnection';
-import SolanaUtil, { TransferSplTokenParams } from '../utils/SolanaUtil';
-import { ActionRouter, BaseRouter, ActionRouterParams } from '../models/BaseRouter';
+import RPCConnection from '../../utils/RPCConnection';
+import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
+import { BaseActionRouter, ActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
 
 const emptyWallet = new EmptyWalletAction();
 
-export class EmptyWalletRouter extends BaseRouter implements ActionRouter<EmptyWalletActionParams> {
+export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<EmptyWalletActionParams> {
   constructor(params: ActionRouterParams = {}) {
     super(params);
     this.path = emptyWallet.path;

@@ -22,10 +22,10 @@ export type ActionRouterParams = {
   path?: string;
 }
 
-export class BaseRouter implements ActionRouter<any> {
-  public static readonly label: string = 'MtnPay';
+export class BaseActionRouter implements ActionRouter<any> {
+  public static readonly label: string = 'Bedrock Foundation';
 
-  public static readonly icon: string = 'https://storage.googleapis.com/magically-assets-production/mtnPay.png';
+  public static readonly icon: string = 'https://storage.googleapis.com/magically-assets-production/bedrock-logo.png';
 
   public logger: typeof console;
 
@@ -39,8 +39,8 @@ export class BaseRouter implements ActionRouter<any> {
 
   constructor(params: ActionRouterParams) {
     this.logger = params.logger ?? console;
-    this.label = params.label ?? BaseRouter.label;
-    this.icon = params.icon ?? BaseRouter.icon;
+    this.label = params.label ?? BaseActionRouter.label;
+    this.icon = params.icon ?? BaseActionRouter.icon;
     this.path = params.path ?? '';
     this.router = express.Router();
     this.router.get(this.path, this.get.bind(this));
@@ -52,8 +52,8 @@ export class BaseRouter implements ActionRouter<any> {
 
     try {
       response.status(StatusCodes.OK).json({
-        label: label ?? this.label ?? BaseRouter.label,
-        icon: icon ?? this.icon ?? BaseRouter.icon,
+        label: label ?? this.label ?? BaseActionRouter.label,
+        icon: icon ?? this.icon ?? BaseActionRouter.icon,
       });
     } catch (e) {
       this.logger.error(e);

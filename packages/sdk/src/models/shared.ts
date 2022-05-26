@@ -66,6 +66,31 @@ export interface Action<T, K extends ActionParams<T>> {
 }
 
 /** ******************************************************************************
+* Status
+******************************************************************************* */
+
+export interface Status<Params, Result, QueryStringParams> {
+  status: (params: Params) => Promise<Result>
+  validate: (params: Params) => JoiUtil.JoiValidatorResponse<Params>
+  validateQueryStringParams: (params: QueryStringParams) => JoiUtil.JoiValidatorResponse<QueryStringParams>
+}
+
+export interface StatusResult<Data> {
+  data?: Data;
+  error?: Error;
+  status: StatusCodes;
+}
+
+export interface StatusResultData {
+  signature?: string | null;
+  message?: string;
+}
+
+export type JSONReponse<T> = {
+  data?: T
+}
+
+/** ******************************************************************************
 * Tokens
 ******************************************************************************* */
 

@@ -6,42 +6,43 @@ import {
   Transaction,
 } from '@solana/web3.js';
 import {
-  PollReferenceStatus,
-  PollReferenceStatusParams,
+  TransferAction,
+  TransferParams,
+  TransferActionParams,
+  TransferDeliveryResponse,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
   TokenTypes,
   TokenInfo,
-  RefStatusResult,
 } from '@bedrock-foundation/sdk';
 import express, { Request, Response } from 'express';
-import RPCConnection from '../utils/RPCConnection';
-import SolanaUtil, { TransferSplTokenParams } from '../utils/SolanaUtil';
+import RPCConnection from '../../utils/RPCConnection';
+import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
+import { ActionRouter, BaseActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
 
-const pollReference = new PollReferenceStatus();
+const transfer = new TransferAction();
 
-export class PollReferenceStatusRouter {
-  public router: express.Router;
-
-  public path: string;
-
-  constructor() {
-    this.path = pollReference.path;
+export class TransferActionRouter extends BaseActionRouter implements ActionRouter<TransferActionParams> {
+  constructor(params: ActionRouterParams = {}) {
+    super(params);
+    this.path = transfer.path;
     this.router = express.Router();
-    this.router.get(this.path, this.get.bind(this));
+    this.router.get(this.path, super.get.bind(this));
+    this.router.post(this.path, this.post.bind(this));
   }
 
-  async get(req: Request<{}, {}, {}, PollReferenceStatusParams>, res: Response): Promise<void> {
-    const { params } = req.query;
-
-    const request = {
-      params,
-    };
-
-    const response = await this.status(request);
+  async post(req: Request<{}, {}, { account: string }, TransferParams>, res: Response): Promise<void> {
+    const { account } = req.body;
 
     try {
+      const request: TransferActionParams = {
+        account,
+        params: req.query,
+      };
+
+      const response = await this.createTransaction(request);
+
       if (!ErrorUtil.isSuccessfulResponse(response)) {
         throw new Error(response?.error?.message);
       }
@@ -51,7 +52,7 @@ export class PollReferenceStatusRouter {
         message: 'Thank you!',
       });
     } catch (e: any) {
-      // this.logger.error(e);
+      this.logger.error(e);
       res.status(StatusCodes.BAD_REQUEST).send({
         transaction: null,
         message: e.message,
@@ -59,12 +60,12 @@ export class PollReferenceStatusRouter {
     }
   }
 
-  async status(request: PollReferenceStatusParams): Promise<RefStatusResult> {
+  async createTransaction(request: TransferActionParams): Promise<TransferDeliveryResponse> {
     const response: TransferDeliveryResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = pollRefStatus.validate(
+    const { value, errors } = transfer.validateDelivery(
       request,
     );
 
@@ -84,7 +85,6 @@ export class PollReferenceStatusRouter {
     const {
       wallet,
       payerToken,
-      ref,
       quantity,
       size,
     } = params;
@@ -106,7 +106,7 @@ export class PollReferenceStatusRouter {
           lamports: amount,
         });
 
-        merchantTransferIx.keys.push({ pubkey: new PublicKey(ref), isWritable: false, isSigner: false });
+        // merchantTransferIx.keys.push({ pubkey: new PublicKey(ref), isWritable: false, isSigner: false });
 
         ixs.push(merchantTransferIx);
       } else if (payerToken === TokenTypes.USDC) {
@@ -121,7 +121,8 @@ export class PollReferenceStatusRouter {
             splTokenPublicKey: usdcTokenAddress,
             amount,
             feePayerPublicKey: customerPublicKey,
-            refs: [new PublicKey(ref)],
+            refs: [],
+            // refs: [new PublicKey(ref)],
           },
         ];
 
