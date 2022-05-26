@@ -32,7 +32,7 @@ function App() {
     const doEffect = async () => {
       const { signature } = await pollReferenceStatus.status({
         ref: requestRef,
-        timeout: 10000,
+        interval: 10000,
         maxRetries: 100,
       });
       console.log(signature);

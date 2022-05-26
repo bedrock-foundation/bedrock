@@ -13,7 +13,7 @@ const { transfer, pollReferenceStatus } = new Bedrock(
 );
 
 const Home: NextPage = () => {
-  const transferParams = React.useMemo(() => {
+  const transferParams: TransferParams = React.useMemo(() => {
     return {
       wallet: 'Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx',
       size: 1,
@@ -32,7 +32,7 @@ const Home: NextPage = () => {
 
   React.useEffect(() => {
     const doEffect = async () => {
-      const { signature } = await pollReferenceStatus.status({ ref: requestRef, timeout: 10000, maxRetries: 100 });
+      const { signature } = await pollReferenceStatus.status({ ref: requestRef, interval: 10000, maxRetries: 100 });
       console.log(signature);
     };
     doEffect();

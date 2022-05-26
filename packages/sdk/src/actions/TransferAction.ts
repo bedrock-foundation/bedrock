@@ -3,6 +3,7 @@ import { Keypair, PublicKey } from '@solana/web3.js';
 import { encodeURL } from '@solana/pay';
 import base58 from 'bs58';
 import { sha256 } from '@ethersproject/sha2';
+import { Buffer } from 'buffer';
 import * as JoiUtil from '../utils/JoiUtil';
 import {
   Action, ActionParams, CreateLinkResult, DeliveryResponse,
@@ -11,7 +12,6 @@ import {
 export interface TransferParams {
   wallet: string;
   payerToken: string;
-  requestRef: string;
   quantity?: number;
   size?: number;
   icon?: string;
