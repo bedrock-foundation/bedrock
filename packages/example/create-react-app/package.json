@@ -1,9 +1,9 @@
 {
   "name": "my-app",
-  "version": "0.1.0",
+  "version": "0.0.5",
   "private": true,
   "dependencies": {
-    "@bedrock-foundation/sdk": "^0.0.4",
+    "@bedrock-foundation/sdk": "^0.0.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",

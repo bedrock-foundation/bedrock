@@ -1,6 +1,6 @@
 {
     "name": "@bedrock-foundation/server",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Bedrock Server",
     "private": false,
     "publishConfig": {
@@ -43,7 +43,7 @@
     "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
-        "@bedrock-foundation/sdk": "^0.0.4",
+        "@bedrock-foundation/sdk": "^0.0.5",
         "@solana/pay": "^0.2.0",
         "@solana/spl-token": "^0.2.0",
         "@solana/web3.js": "1.37.0",
