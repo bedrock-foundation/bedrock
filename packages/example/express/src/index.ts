@@ -4,7 +4,7 @@ import { json } from 'body-parser';
 import {
   TransferRouter,
   EmptyWalletRouter,
-  ActionRouter,
+  PollReferenceRouter,
 } from '@bedrock-foundation/server';
 
 function cors(req, res, next) {
@@ -21,9 +21,9 @@ class App {
 
   public port: number;
 
-  public routers: ActionRouter<any>[];
+  public routers: {router: express.router} [];
 
-  constructor(port: number, routers: ActionRouter<any>[]) {
+  constructor(port: number, routers: {router: express.Router}[]) {
     this.app = express();
     this.port = port;
     this.routers = routers;
@@ -51,7 +51,8 @@ class App {
   }
 }
 
-new App(3000, [
+new App(3001, [
   new TransferRouter(),
   new EmptyWalletRouter(),
+  new PollReferenceRouter(),
 ]).listen();

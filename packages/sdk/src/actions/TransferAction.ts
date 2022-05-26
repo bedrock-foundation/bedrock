@@ -11,7 +11,7 @@ import {
 export interface TransferParams {
   wallet: string;
   payerToken: string;
-  ref?: string;
+  requestRef: string;
   quantity?: number;
   size?: number;
   icon?: string;
@@ -25,7 +25,7 @@ export interface TransferDeliveryResponse extends DeliveryResponse { }
 export const transferParamsSchema = Joi.object().keys({
   wallet: Joi.string().required(),
   payerToken: Joi.string().required(),
-  ref: Joi.string().required(),
+  requestRef: Joi.string().required(),
   quantity: Joi.number().optional(),
   size: Joi.number().optional(),
   icon: Joi.string().optional(),
@@ -51,6 +51,7 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
   }
 
   createLink(params: TransferParams): CreateLinkResult {
+    console.log('typeof window', typeof window);
     const requestRef = Keypair.generate().publicKey.toBase58();
     const url = (() => {
       let result = `${this.basePath}${this.path}?wallet=${params.wallet}&payerToken=${params.payerToken}`;
@@ -66,7 +67,7 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
     const hash = sha256(new Uint8Array(finalBuffer)).slice(2);
     const paramsRef = new PublicKey(Buffer.from(hash, 'hex')).toBase58();
     const bedrockRef = BEDROCK_PUBLIC_KEY.toBase58();
-    const urlWithRefs = `${url}&requestRef=${requestRef}&paramsRef=${paramsRef}&bedrockRef=${bedrockRef}`;
+    const urlWithRefs = `${url}&requestRef=${requestRef}`;
     const link = encodeURL({ link: new URL(urlWithRefs) }).toString();
 
     console.log(link);

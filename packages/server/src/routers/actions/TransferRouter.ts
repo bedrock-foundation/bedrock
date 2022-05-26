@@ -23,7 +23,7 @@ import { ActionRouter, BaseActionRouter, ActionRouterParams } from '../../models
 
 const transfer = new TransferAction();
 
-export class TransferActionRouter extends BaseActionRouter implements ActionRouter<TransferActionParams> {
+export class TransferRouter extends BaseActionRouter implements ActionRouter<TransferActionParams> {
   constructor(params: ActionRouterParams = {}) {
     super(params);
     this.path = transfer.path;
@@ -87,7 +87,10 @@ export class TransferActionRouter extends BaseActionRouter implements ActionRout
       payerToken,
       quantity,
       size,
+      requestRef,
     } = params;
+
+    console.log('requestRef', requestRef);
 
     /**
      * Create the transaction
@@ -106,7 +109,7 @@ export class TransferActionRouter extends BaseActionRouter implements ActionRout
           lamports: amount,
         });
 
-        // merchantTransferIx.keys.push({ pubkey: new PublicKey(ref), isWritable: false, isSigner: false });
+        merchantTransferIx.keys.push({ pubkey: new PublicKey(requestRef), isWritable: false, isSigner: false });
 
         ixs.push(merchantTransferIx);
       } else if (payerToken === TokenTypes.USDC) {
@@ -121,8 +124,7 @@ export class TransferActionRouter extends BaseActionRouter implements ActionRout
             splTokenPublicKey: usdcTokenAddress,
             amount,
             feePayerPublicKey: customerPublicKey,
-            refs: [],
-            // refs: [new PublicKey(ref)],
+            refs: [new PublicKey(requestRef)],
           },
         ];
 

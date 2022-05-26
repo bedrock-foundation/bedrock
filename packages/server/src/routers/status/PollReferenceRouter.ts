@@ -68,8 +68,11 @@ export class PollReferenceRouter
       return response;
     }
 
+
+    console.log(ref);
     try {
       const signatures = await RPCConnection.getSignaturesForAddress(new PublicKey(ref), {}, 'confirmed');
+      console.log(signatures);
       response.data = { signature: signatures?.[0]?.signature ?? null };
       response.status = StatusCodes.OK;
       return response;

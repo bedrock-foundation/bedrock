@@ -1,6 +1,8 @@
+/* eslint-disable no-async-promise-executor */
 import Joi from 'joi';
 import { Status, JSONReponse, StatusResultData } from '../models/shared';
 import * as JoiUtil from '../utils/JoiUtil';
+import * as WaitUtil from '../utils/WaitUtil';
 
 export interface PollReferenceQueryStringParams {
   ref: string;
@@ -31,25 +33,22 @@ export class PollReferenceStatus implements Status<PollReferenceStatusParams, St
   }
 
   async status(params: PollReferenceStatusParams): Promise<StatusResultData> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const { ref, interval = 5000, maxRetries = 10 } = params;
       const url = `${this.basePath}${this.path}?ref=${ref}`;
-      let attempts = 0;
 
-      const intervalCounter = setInterval(async () => {
-        attempts++;
+      for (let i = 0; i < maxRetries; i++) {
+        await WaitUtil.wait(interval);
         const response = await fetch(url);
         const { data }: JSONReponse<StatusResultData> = await response.json();
 
         if (data?.signature) {
-          clearInterval(intervalCounter);
           resolve(data);
-        } else if (attempts >= maxRetries) {
-          clearInterval(intervalCounter);
-          attempts++;
-          reject(new Error('Timeout'));
+          return;
         }
-      }, interval);
+      }
+
+      reject(new Error('Timeout'));
     });
   }
 

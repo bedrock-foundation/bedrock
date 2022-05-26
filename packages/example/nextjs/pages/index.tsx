@@ -8,26 +8,37 @@ import {
 import QRCode from 'react-qr-code';
 import styles from '../styles/Home.module.css';
 
-const { transfer, pollRefStatus } = new Bedrock('http://localhost:3001');
+const { transfer, pollReferenceStatus } = new Bedrock(
+  'https://magically-production.ngrok.io',
+);
 
 const Home: NextPage = () => {
-  const [transferParams] = React.useState<TransferParams>({
-    wallet: 'Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx',
-    size: 1,
-    payerToken: TokenTypes.USDC,
-  });
+  const transferParams = React.useMemo(() => {
+    return {
+      wallet: 'Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx',
+      size: 1,
+      payerToken: TokenTypes.USDC,
+    };
+  }, []);
 
-  const [{ link, refs: { requestRef } }] = React.useState(transfer.createLink(transferParams));
+  const result = React.useMemo(() => transfer.createLink(transferParams), [transferParams]);
+
+  console.log(result);
+
+  const {
+    link,
+    refs: { requestRef },
+  } = result;
 
   React.useEffect(() => {
     const doEffect = async () => {
-      const { signature } = await pollRefStatus(requestRef);
+      const { signature } = await pollReferenceStatus.status({ ref: requestRef, timeout: 10000, maxRetries: 100 });
       console.log(signature);
     };
     doEffect();
-  }, [requestRef]);
+  });
 
-  console.log(requestRef);
+  console.log(link);
 
   return (
     <div className={styles.container}>
