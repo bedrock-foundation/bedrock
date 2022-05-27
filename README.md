@@ -57,7 +57,7 @@ The link returned is a string representing a Solana Pay Transaction Request HTTP
 
 We have a few channels for contact:
 
-- [Discord](https://discord.gg/on_bedrock)
+- [Discord](https://discord.gg/qDJm4GP5)
 - [@on_bedrock](https://twitter.com/on_bedrock) on Twitter
 - [GitHub Issues](https://github.com/bedrock-foundation/bedrock/issues)
 
