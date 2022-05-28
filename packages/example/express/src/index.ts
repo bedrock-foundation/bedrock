@@ -51,8 +51,15 @@ class App {
   }
 }
 
-new App(3001, [
-  new TransferRouter(),
-  new EmptyWalletRouter(),
-  new PollReferenceRouter(),
-]).listen();
+const app = configureBedrockServer(express(), {
+  routers: [
+    [
+      new TransferRouter(),
+      new EmptyWalletRouter(),
+      new PollReferenceRouter(),
+    ],
+  ],
+  enableWebhooks: true,
+});
+
+new App(3001, ).listen();
