@@ -1,3 +1,3 @@
-import { DeliveryResponse, StatusCodes } from '../models/shared';
+import { StatusCodes, CreateTransactionResponse } from '../models/shared';
 
-export const isSuccessfulResponse = (response: DeliveryResponse): boolean => response.status === StatusCodes.OK;
+export const isSuccessfulResponse = (response: CreateTransactionResponse): boolean => response.status === StatusCodes.OK;

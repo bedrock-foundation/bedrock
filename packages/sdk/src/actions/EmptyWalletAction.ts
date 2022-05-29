@@ -3,14 +3,18 @@ import { Keypair } from '@solana/web3.js';
 import { encodeURL } from '@solana/pay';
 import * as JoiUtil from '../utils/JoiUtil';
 import {
-  Action, ActionParams, CreateLinkResult, DeliveryResponse,
+  Action,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  CreateLinkResult,
+  BaseTransactionRequestParams,
 } from '../models/shared';
 
-export type EmptyWalletParams = {};
+export type EmptyWalletParams = BaseTransactionRequestParams;
 
-export type EmptyWalletActionParams = ActionParams<EmptyWalletParams>
+export type CreateEmptyWalletTransactionRequest = CreateTransactionRequest<EmptyWalletParams>
 
-export interface EmptyWalletDeliveryResponse extends DeliveryResponse { }
+export type CreateEmptyWalletTransactionResponse = CreateTransactionResponse;
 
 export const emptyWalletParamsSchema = Joi.object().keys({});
 
@@ -21,7 +25,7 @@ export const emptyWalletDeliverySchema = Joi.object().keys({
   abortEarly: false,
 });
 
-export class EmptyWalletAction implements Action<EmptyWalletParams, EmptyWalletActionParams> {
+export class EmptyWalletAction implements Action<EmptyWalletParams, CreateEmptyWalletTransactionRequest> {
   public readonly path: string = '/empty-wallet';
 
   public readonly basePath: string;
@@ -52,7 +56,7 @@ export class EmptyWalletAction implements Action<EmptyWalletParams, EmptyWalletA
     );
   }
 
-  validateDelivery(params: EmptyWalletActionParams): JoiUtil.JoiValidatorResponse<EmptyWalletActionParams> {
+  validateDelivery(params: CreateEmptyWalletTransactionRequest): JoiUtil.JoiValidatorResponse<CreateEmptyWalletTransactionRequest> {
     return JoiUtil.validate(
       emptyWalletDeliverySchema,
       params,

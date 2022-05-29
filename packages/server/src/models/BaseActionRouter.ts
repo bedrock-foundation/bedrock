@@ -1,14 +1,15 @@
 import express, { Request, Response } from 'express';
 import {
   StatusCodes,
-  DeliveryResponse,
+  CreateTransactionResponse,
+  CreateTransactionRequest,
 } from '@bedrock-foundation/sdk';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import {
   MetadataRequest, MetadataResponse, TransactionRequest, TransactionResponse,
 } from './shared';
 
-export interface ActionRouter<T> {
+export interface ActionRouter<T extends CreateTransactionRequest<any>> {
   logger: typeof console;
   label: string;
   icon: string;
@@ -16,7 +17,7 @@ export interface ActionRouter<T> {
   router: any;
   get(request: MetadataRequest<T>, response: MetadataResponse): Promise<void>;
   post(request: TransactionRequest<T>, response: TransactionResponse): Promise<void>;
-  createTransaction: (params: T) => Promise<DeliveryResponse>;
+  createTransaction: (request: T) => Promise<CreateTransactionResponse>;
 }
 
 export type ActionRouterParams = {
@@ -71,7 +72,7 @@ export class BaseActionRouter implements ActionRouter<any> {
     throw new Error(errorMsg);
   }
 
-  createTransaction(_params: any): Promise<DeliveryResponse> {
+  createTransaction(_params: any): Promise<CreateTransactionResponse> {
     const errorMsg = 'Method not implemented.';
     this.logger.log(errorMsg);
     throw new Error(errorMsg);

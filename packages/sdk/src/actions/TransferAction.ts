@@ -4,22 +4,23 @@ import { encodeURL } from '@solana/pay';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import * as JoiUtil from '../utils/JoiUtil';
 import {
-  Action, ActionParams, CreateLinkResult, DeliveryResponse,
+  Action,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  CreateLinkResult,
+  BaseTransactionRequestParams,
 } from '../models/shared';
 
-export interface TransferParams {
+export type TransferParams = {
   wallet: string;
   token: string;
   quantity?: number;
   size?: number;
-  icon?: string;
-  label?: string;
-  refs?: string[];
-}
+} & BaseTransactionRequestParams;
 
-export type TransferActionParams = ActionParams<TransferParams>
+export type CreateTransferTransactionRequest = CreateTransactionRequest<TransferParams>;
 
-export interface TransferDeliveryResponse extends DeliveryResponse { }
+export type CreateTransferTransactionResponse = CreateTransactionResponse;
 
 export const transferParamsSchema = Joi.object().keys({
   wallet: Joi.string().required(),
@@ -38,7 +39,7 @@ export const transferDeliverySchema = Joi.object().keys({
   abortEarly: false,
 });
 
-export class TransferAction implements Action<TransferParams, TransferActionParams> {
+export class TransferAction implements Action<TransferParams, CreateTransferTransactionRequest> {
   public readonly path: string = '/transfer';
 
   public readonly basePath: string;
@@ -53,7 +54,6 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
     const url = `${this.basePath}${this.path}?params=${JSURL.stringify(params)}`;
     const link = encodeURL({ link: new URL(url) }).toString();
 
-    console.log(link);
     return {
       link,
       refs: {
@@ -69,7 +69,7 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
     );
   }
 
-  validateDelivery(params: TransferActionParams): JoiUtil.JoiValidatorResponse<TransferActionParams> {
+  validateDelivery(params: CreateTransferTransactionRequest): JoiUtil.JoiValidatorResponse<CreateTransferTransactionRequest> {
     return JoiUtil.validate(
       transferDeliverySchema,
       params,

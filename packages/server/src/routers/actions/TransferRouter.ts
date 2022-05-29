@@ -8,8 +8,8 @@ import {
 import {
   TransferAction,
   TransferParams,
-  TransferActionParams,
-  TransferDeliveryResponse,
+  CreateTransferTransactionRequest,
+  CreateTransferTransactionResponse,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
@@ -25,7 +25,7 @@ import { TransactionRequest, TransactionResponse } from '../../models/shared';
 
 const transfer = new TransferAction();
 
-export class TransferRouter extends BaseActionRouter implements ActionRouter<TransferActionParams> {
+export class TransferRouter extends BaseActionRouter implements ActionRouter<CreateTransferTransactionRequest> {
   constructor(params: ActionRouterParams = {}) {
     super(params);
     this.path = transfer.path;
@@ -39,7 +39,7 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
     const params = JSURL.parse<TransferParams>(req.query.params);
 
     try {
-      const request: TransferActionParams = {
+      const request: CreateTransferTransactionRequest = {
         account,
         params,
       };
@@ -63,8 +63,8 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
     }
   }
 
-  async createTransaction(request: TransferActionParams): Promise<TransferDeliveryResponse> {
-    const response: TransferDeliveryResponse = {
+  async createTransaction(request: CreateTransferTransactionRequest): Promise<CreateTransferTransactionResponse> {
+    const response: CreateTransferTransactionResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
@@ -75,7 +75,7 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
     const {
       account,
       params,
-    }: TransferActionParams = value;
+    }: CreateTransferTransactionRequest = value;
 
     if (JoiUtil.hasErrors(errors)) {
       const errorMsg = JoiUtil.errorsToMessage(errors);

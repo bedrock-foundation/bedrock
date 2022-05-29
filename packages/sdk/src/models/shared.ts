@@ -17,27 +17,21 @@ export enum StatusCodes {
 }
 
 /** ******************************************************************************
-* Error Handling
-******************************************************************************* */
-
-export interface IError {
-  message: string;
-  fields?: Record<string, string>;
-}
-
-export function toError(message: string): IError {
-  const error: IError = {
-    message,
-  };
-
-  return error;
-}
-
-/** ******************************************************************************
 * Action Creation
 ******************************************************************************* */
 
-export interface DeliveryResponse {
+export interface BaseTransactionRequestParams {
+  icon?: string;
+  label?: string;
+  refs?: string[];
+}
+
+export interface CreateTransactionRequest<T extends BaseTransactionRequestParams> {
+  account: string;
+  params: T;
+}
+
+export interface CreateTransactionResponse {
   txBuffer?: Buffer;
   error?: Error;
   status: StatusCodes;
@@ -54,12 +48,7 @@ export interface CreateLinkResult {
   refs: CreateLinkRefs;
 }
 
-export interface ActionParams<T> {
-  account: string;
-  params: T;
-}
-
-export interface Action<T, K extends ActionParams<T>> {
+export interface Action<T, K extends CreateTransactionRequest<T>> {
   createLink: (params: K['params']) => CreateLinkResult;
   validate: (params: K['params']) => JoiUtil.JoiValidatorResponse<T>;
   validateDelivery: (params: K) => JoiUtil.JoiValidatorResponse<K>;

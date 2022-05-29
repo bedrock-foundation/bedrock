@@ -6,8 +6,8 @@ import {
 } from '@solana/web3.js';
 import {
   EmptyWalletAction,
-  EmptyWalletActionParams,
-  EmptyWalletDeliveryResponse,
+  CreateEmptyWalletTransactionRequest,
+  CreateEmptyWalletTransactionResponse,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
@@ -23,7 +23,7 @@ import { TransactionRequest, TransactionResponse } from '../../models/shared';
 
 const emptyWallet = new EmptyWalletAction();
 
-export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<EmptyWalletActionParams> {
+export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<CreateEmptyWalletTransactionRequest> {
   constructor(params: ActionRouterParams = {}) {
     super(params);
     this.path = emptyWallet.path;
@@ -32,37 +32,37 @@ export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<
     this.router.post(this.path, this.post.bind(this));
   }
 
-  async post(req: TransactionRequest<EmptyWalletParams>, res: TransactionResponse): Promise<void> {
-    const { account } = req.body;
-    const params = JSURL.parse<EmptyWalletParams>(req.query.params);
+  async post(request: TransactionRequest<EmptyWalletParams>, response: TransactionResponse): Promise<void> {
+    const { account } = request.body;
+    const params = JSURL.parse<EmptyWalletParams>(request.query.params);
 
     try {
-      const request: EmptyWalletActionParams = {
+      const createTxRequest: CreateEmptyWalletTransactionRequest = {
         account,
         params,
       };
 
-      const response = await this.createTransaction(request);
+      const createTxResponse = await this.createTransaction(createTxRequest);
 
-      if (!ErrorUtil.isSuccessfulResponse(response)) {
-        throw new Error(response?.error?.message);
+      if (!ErrorUtil.isSuccessfulResponse(createTxResponse)) {
+        throw new Error(createTxResponse?.error?.message);
       }
 
-      res.status(response.status).json({
-        transaction: response?.txBuffer?.toString('base64') ?? null,
+      response.status(createTxResponse.status).json({
+        transaction: createTxResponse?.txBuffer?.toString('base64') ?? null,
         message: 'Thank you!',
       });
     } catch (e: any) {
       this.logger.error(e);
-      res.status(StatusCodes.BAD_REQUEST).send({
+      response.status(StatusCodes.BAD_REQUEST).send({
         transaction: null,
         message: e.message,
       });
     }
   }
 
-  async createTransaction(request: EmptyWalletActionParams): Promise<EmptyWalletDeliveryResponse> {
-    const response: EmptyWalletDeliveryResponse = {
+  async createTransaction(request: CreateEmptyWalletTransactionRequest): Promise<CreateEmptyWalletTransactionResponse> {
+    const response: CreateEmptyWalletTransactionResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
@@ -72,7 +72,7 @@ export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<
 
     const {
       account,
-    }: EmptyWalletActionParams = value;
+    }: CreateEmptyWalletTransactionRequest = value;
 
     if (JoiUtil.hasErrors(errors)) {
       const errorMsg = JoiUtil.errorsToMessage(errors);
