@@ -15,6 +15,7 @@ import {
 } from '@bedrock-foundation/sdk';
 import * as spl from '@solana/spl-token';
 import express from 'express';
+import * as JSURL from '@bedrock-foundation/jsurl';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
 import { BaseActionRouter, ActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
@@ -33,11 +34,12 @@ export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<
 
   async post(req: TransactionRequest<EmptyWalletParams>, res: TransactionResponse): Promise<void> {
     const { account } = req.body;
+    const params = JSURL.parse<EmptyWalletParams>(req.query.params);
 
     try {
       const request: EmptyWalletActionParams = {
         account,
-        params: req.query,
+        params,
       };
 
       const response = await this.createTransaction(request);

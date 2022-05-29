@@ -6,7 +6,7 @@ import {
   Action, ActionParams, CreateLinkResult, DeliveryResponse,
 } from '../models/shared';
 
-export interface EmptyWalletParams {}
+export type EmptyWalletParams = {};
 
 export type EmptyWalletActionParams = ActionParams<EmptyWalletParams>
 
