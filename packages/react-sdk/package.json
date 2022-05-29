@@ -45,12 +45,17 @@
     "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
-        "@bedrock-foundation/sdk": "^0.0.7",
-        "react": "^18.1.0"
+        "@bedrock-foundation/sdk": "^0.0.7"
+    },
+    "peerDependencies": {
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
     },
     "devDependencies": {
         "@types/long": "^3.0.32",
         "@types/node": "^17.0.34",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
         "npm-watch": "^0.11.0",
         "ts-loader": "^5.4.5",
         "ts-node-dev": "^1.1.8",

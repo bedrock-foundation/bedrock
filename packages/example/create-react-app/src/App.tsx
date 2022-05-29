@@ -1,7 +1,11 @@
 import React from 'react';
 import './App.css';
-import { Bedrock, TokenTypes, TransferParams } from "@bedrock-foundation/sdk";
-import { useCreateLink } from "@bedrock-foundation/sdk/react";
+import {
+  Bedrock,
+  TokenTypes,
+  TransferParams,
+  useCreateLink,
+} from "@bedrock-foundation/react-sdk";
 import QRCode from "react-qr-code";
 
 const { transfer, pollReferenceStatus } = new Bedrock(
@@ -11,15 +15,14 @@ const { transfer, pollReferenceStatus } = new Bedrock(
 function App() {
   const [signature, setSignature] = React.useState<string | null>(null);
 
-  const transferParams: TransferParams = React.useMemo(() => {
-    return {
+
+  const {
+    link, refs: { requestRef },
+  } = useCreateLink(transfer, {
       wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
       size: 1,
       token: TokenTypes.USDC,
-    };
-  }, []);
-
-  const result = useCreateLink(transfer, transferParams);
+  });
 
   // const { error, cancel } = usePollReferenceStatus({
   //   ref: requestRef,
@@ -28,10 +31,6 @@ function App() {
   //   onCancel: () => {},
   // });
 
-
-
-  const link = 'whatwhatwhat';
-  const requestRef = "whatwhatwhat";
 
   React.useEffect(() => {
     const doEffect = async () => {
