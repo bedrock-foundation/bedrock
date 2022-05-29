@@ -23,13 +23,13 @@ export function usePollReferenceStatus(params: UsePollReferenceStatusParams): Us
   const [data, setData] = React.useState<StatusResultData | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
+  const { pollReferenceStatus } = React.useMemo(() => params.bedrock, [params.bedrock]);
   const cancel = React.useCallback((broadcast: boolean = true) => {
     setIsPolling(false);
     if (broadcast) {
       params?.onCancel?.();
     }
   }, [isPolling]);
-  const { pollReferenceStatus } = React.useMemo(() => params.bedrock, [params.bedrock]);
 
   useInterval(
     async () => {
