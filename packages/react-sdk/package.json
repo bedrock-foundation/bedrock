@@ -1,6 +1,6 @@
 {
     "name": "@bedrock-foundation/react-sdk",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Bedrock React SDK",
     "private": false,
     "publishConfig": {
@@ -45,7 +45,7 @@
     "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
-        "@bedrock-foundation/sdk": "^0.0.7"
+        "@bedrock-foundation/sdk": "^0.0.8"
     },
     "peerDependencies": {
         "react": "^18.0.0",
