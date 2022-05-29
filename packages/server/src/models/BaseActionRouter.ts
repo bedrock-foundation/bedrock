@@ -30,7 +30,7 @@ export type ActionRouterParams = {
 export class BaseActionRouter implements ActionRouter<any> {
   public static readonly label: string = 'Bedrock Foundation';
 
-  public static readonly icon: string = 'https://storage.googleapis.com/magically-assets-production/bedrock-logo.png';
+  public static readonly icon: string = 'https://storage.googleapis.com/bedrock-platform-assets-production-mainnet/brand/bedrock-logo.png';
 
   public logger: typeof console;
 
