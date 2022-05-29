@@ -7,8 +7,8 @@ import {
   TransferParams,
   useCreateLink,
   usePollReferenceStatus,
+  QRCode,
 } from "@bedrock-foundation/react-sdk";
-import QRCode from "react-qr-code";
 
 const bedrock = new Bedrock();
 
@@ -46,7 +46,9 @@ function App() {
     <div className="App">
       <header className="App-header">
         <QRCode value={link} size={256} />
-        {signature ? `Transaction Signature: ${signature}` : "Waiting for confirmation..."}
+        {signature
+          ? `Transaction Signature: ${signature}`
+          : "Waiting for confirmation..."}
         <div onClick={() => cancel()}>Cancel</div>
       </header>
     </div>
