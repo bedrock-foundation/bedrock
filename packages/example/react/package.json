@@ -3,7 +3,7 @@
   "version": "0.0.15",
   "private": true,
   "dependencies": {
-    "@bedrock-foundation/react-sdk": "^0.0.15",
+    "@bedrock-foundation/sdk": "workspace:^",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",

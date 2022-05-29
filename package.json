@@ -18,7 +18,20 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^4.3.8",
-    "lerna": "^3.22.1",
     "react": "17.0.1"
-  }
+  },
+  "workspaces": {
+    "packages": [
+      "packages/example/create-react-app",
+      "packages/example/express",
+      "packages/example/nextjs",
+      "packages/marketing",
+      "packages/sdk",
+      "packages/server"
+    ],
+    "nohoist": [
+      "**/@solana/web3.js/lib/"
+    ]
+  },
+  "packageManager": "yarn@3.1.1"
 }

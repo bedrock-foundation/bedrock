@@ -52,6 +52,8 @@ module.exports = {
     'arrow-body-style': 0,
     'no-await-in-loop': 0,
     'no-plusplus': 0,
+    'linebreak-style': 0,
+    semi: 0,
 
     // should fix these ones
     'no-console': 0,
