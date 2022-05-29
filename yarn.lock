@@ -2704,13 +2704,12 @@ __metadata:
   linkType: soft
 
 "@bundlr-network/client@npm:^0.7.3":
-  version: 0.7.5
-  resolution: "@bundlr-network/client@npm:0.7.5"
+  version: 0.7.7
+  resolution: "@bundlr-network/client@npm:0.7.7"
   dependencies:
     "@solana/wallet-adapter-base": ^0.9.2
     "@solana/web3.js": ^1.36.0
     "@supercharge/promise-pool": ^2.1.0
-    "@types/async-retry": ^1.4.3
     algosdk: ^1.13.1
     arbundles: ^0.6.17
     arweave: 1.10.18
@@ -2718,7 +2717,6 @@ __metadata:
     axios: ^0.25.0
     base64url: ^3.0.1
     bignumber.js: ^9.0.1
-    browserify-zlib: ^0.2.0
     bs58: ^4.0.1
     commander: ^8.2.0
     csv: ^6.0.5
@@ -2727,11 +2725,10 @@ __metadata:
     js-sha256: ^0.9.0
     mime-types: ^2.1.34
     near-api-js: ^0.44.2
-    path-browserify: ^1.0.1
-    typescript: ^4.5.4
+    stream-to-async-iterator: ^1.0.0
   bin:
     bundlr: build/node/cli.js
-  checksum: fb1b7607d7a6ed93e76ccdd8ac86b2ccfaa32c6bff16c676a46dbd51dc97d473ecdd1d83e08345976af1812a0fb72219acaebe3250de3f9222605945ecaf573d
+  checksum: 950569dec3c1cbf1639b3605f746269f83961a064e016bd65a01e36a370f8e702f6edad71ffd71a02b91e5f579eb758d321caab8adf7ae984b3c468d40e3587b
   languageName: node
   linkType: hard
 
@@ -4796,8 +4793,8 @@ __metadata:
   linkType: hard
 
 "@testing-library/react@npm:^13.0.0":
-  version: 13.2.0
-  resolution: "@testing-library/react@npm:13.2.0"
+  version: 13.3.0
+  resolution: "@testing-library/react@npm:13.3.0"
   dependencies:
     "@babel/runtime": ^7.12.5
     "@testing-library/dom": ^8.5.0
@@ -4805,7 +4802,7 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
     react-dom: ^18.0.0
-  checksum: 29f4a97c932a7fd78a55791a0ae0ba8d33c5241acbade98b6714440981e6e3d86a243e0b22161d3323b549ce059c175ae56d6b5053ad44083ab6e40ca211f19e
+  checksum: 98fd8616a7cae0ecfcbe97b5b3c5b91fbafccf449c04875395ccc0e3f0b139e53b3261b9536ec2169a5e2883a1be2098907209064061fe0c2ff21dfbc785dd40
   languageName: node
   linkType: hard
 
@@ -4873,15 +4870,6 @@ __metadata:
   version: 4.2.2
   resolution: "@types/aria-query@npm:4.2.2"
   checksum: 6f2ce11d91e2d665f3873258db19da752d91d85d3679eb5efcdf9c711d14492287e1e4eb52613b28e60375841a9e428594e745b68436c963d8bad4bf72188df3
-  languageName: node
-  linkType: hard
-
-"@types/async-retry@npm:^1.4.3":
-  version: 1.4.4
-  resolution: "@types/async-retry@npm:1.4.4"
-  dependencies:
-    "@types/retry": "*"
-  checksum: e6910de0f2e3eb27e1d038fbf48924eb70e304400983e857022a31e9f0ffc6fa3b30d2a5c3384f341a8a1355592c6e781b6d575c1a768a021cd32626ecf7aeb6
   languageName: node
   linkType: hard
 
@@ -5184,7 +5172,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:17.0.35, @types/node@npm:^17.0.34":
+"@types/node@npm:*, @types/node@npm:^17.0.34":
+  version: 17.0.36
+  resolution: "@types/node@npm:17.0.36"
+  checksum: 11055fde0a1e1421113849b5e32c7022911efc0be670729947bf0162970e79962d804b1eb8a9afb291380cac97cf0e684511415d586ae5fe1560322c940fe188
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:17.0.35":
   version: 17.0.35
   resolution: "@types/node@npm:17.0.35"
   checksum: 7a24946ae7fd20267ed92466384f594e448bfb151081158d565cc635d406ecb29ea8fb85fcd2a1f71efccf26fb5bd3c6f509bde56077eb8b832b847a6664bc62
@@ -5220,9 +5215,9 @@ __metadata:
   linkType: hard
 
 "@types/prettier@npm:^2.1.5":
-  version: 2.6.1
-  resolution: "@types/prettier@npm:2.6.1"
-  checksum: b25ec46d18129fa40c1a1f42feb7406e8f19901ba5261ba3c71600ad14996ae07b4f4b727a9b83da673948011e59d870fc519166f05b5d49e9ad39db1aea8c93
+  version: 2.6.3
+  resolution: "@types/prettier@npm:2.6.3"
+  checksum: e1836699ca189fff6d2a73dc22e028b6a6f693ed1180d5998ac29fa197caf8f85aa92cb38db642e4a370e616b451cb5722ad2395dab11c78e025a1455f37d1f0
   languageName: node
   linkType: hard
 
@@ -5309,13 +5304,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: e99fc7cc6265407987b30deda54c1c24bb1478803faf6037557a774b2f034c5b097ffd65847daa87e82a61a250d919f35c3588654b0fdaa816906650f596d1b0
-  languageName: node
-  linkType: hard
-
-"@types/retry@npm:*":
-  version: 0.12.2
-  resolution: "@types/retry@npm:0.12.2"
-  checksum: e5675035717b39ce4f42f339657cae9637cf0c0051cf54314a6a2c44d38d91f6544be9ddc0280587789b6afd056be5d99dbe3e9f4df68c286c36321579b1bf4a
   languageName: node
   linkType: hard
 
@@ -9570,9 +9558,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.118":
-  version: 1.4.140
-  resolution: "electron-to-chromium@npm:1.4.140"
-  checksum: bf06151bdd76dbcf00c97215d0c79479a4d2116e4a1734ee319cf83865ceab56ee834b3f4347bf9c01ae5c0a953fb0b93e2f097c3ed33f6292d03bcb40af651d
+  version: 1.4.141
+  resolution: "electron-to-chromium@npm:1.4.141"
+  checksum: 7b87de52a9a2bbcb35a3c6a91e6eb7afea8f44a419a7f709b4739ab3d873d052d86b9a987fef55568626aa13616db4cafd3e50c6e2880a73455e2b2e26c02cb9
   languageName: node
   linkType: hard
 
@@ -14406,11 +14394,11 @@ __metadata:
   linkType: hard
 
 "memfs@npm:^3.1.2, memfs@npm:^3.4.3":
-  version: 3.4.3
-  resolution: "memfs@npm:3.4.3"
+  version: 3.4.4
+  resolution: "memfs@npm:3.4.4"
   dependencies:
     fs-monkey: 1.0.3
-  checksum: c947ef46e2036524ba120cb42fa502fd75dae8d49d0c53e818d3d3780b9a3a47845705cd1cf51eec04c70f1db590ca7b6c7f78dd5a65883bb253fcedf86f412c
+  checksum: c91d5a3f7e57c6b4a7ddbb28b4ccbce9f6ba15c478d2257d9c495f05ef8ca16ebbe18c8bc0f89dc79aeaba9854c89ac72a09ebfd99aeeeae1d9cd13a57cf4573
   languageName: node
   linkType: hard
 
@@ -15880,13 +15868,6 @@ __metadata:
   version: 0.0.1
   resolution: "path-browserify@npm:0.0.1"
   checksum: ae8dcd45d0d3cfbaf595af4f206bf3ed82d77f72b4877ae7e77328079e1468c84f9386754bb417d994d5a19bf47882fd253565c18441cd5c5c90ae5187599e35
-  languageName: node
-  linkType: hard
-
-"path-browserify@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "path-browserify@npm:1.0.1"
-  checksum: c6d7fa376423fe35b95b2d67990060c3ee304fc815ff0a2dc1c6c3cfaff2bd0d572ee67e18f19d0ea3bbe32e8add2a05021132ac40509416459fffee35200699
   languageName: node
   linkType: hard
 
@@ -18041,8 +18022,8 @@ __metadata:
   linkType: hard
 
 "rollup@npm:^2.43.1":
-  version: 2.75.0
-  resolution: "rollup@npm:2.75.0"
+  version: 2.75.3
+  resolution: "rollup@npm:2.75.3"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -18050,7 +18031,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: a99b63691bb63ebed81eabdff8f9c3234f3e9fe1e0be22526f036ab530f77881a93ea5ad86c1c7c161c6fb8615552e46df93792ffe212c1197b2244231715bff
+  checksum: ac33a2336df049f21dea64e4c9faee2551bddf2920944ea6214b2ed214f3861c9a4e1a8b7a32d2af6632f649a25a2bf4da8fad9f84f5093f2bf4d7e77933756b
   languageName: node
   linkType: hard
 
@@ -18958,6 +18939,13 @@ __metadata:
   version: 1.0.1
   resolution: "stream-shift@npm:1.0.1"
   checksum: 59b82b44b29ec3699b5519a49b3cedcc6db58c72fb40c04e005525dfdcab1c75c4e0c180b923c380f204bed78211b9bad8faecc7b93dece4d004c3f6ec75737b
+  languageName: node
+  linkType: hard
+
+"stream-to-async-iterator@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "stream-to-async-iterator@npm:1.0.0"
+  checksum: a92fdbbf0bbb7eed6528a066f104268b49f662547f8d2b8a15d3ed53a913f80eee6a2a6be2da64937fe3a02f0d997b9aa7073c9edb0bbe179f06a7f9d42ae1aa
   languageName: node
   linkType: hard
 
@@ -20069,7 +20057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.2.4, typescript@npm:^4.4.2, typescript@npm:^4.5.4, typescript@npm:^4.6.4":
+"typescript@npm:^4.2.4, typescript@npm:^4.4.2, typescript@npm:^4.6.4":
   version: 4.7.2
   resolution: "typescript@npm:4.7.2"
   bin:
@@ -20099,7 +20087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.2.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.5.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.2.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
   version: 4.7.2
   resolution: "typescript@patch:typescript@npm%3A4.7.2#~builtin<compat/typescript>::version=4.7.2&hash=493e53"
   bin:
