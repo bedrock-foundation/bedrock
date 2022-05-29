@@ -1,6 +1,6 @@
 /* eslint-disable no-async-promise-executor */
 import Joi from 'joi';
-import { Status, JSONReponse, StatusResultData } from '../models/shared';
+import { Status, StatusResultData } from '../models/shared';
 import * as JoiUtil from '../utils/JoiUtil';
 import * as WaitUtil from '../utils/WaitUtil';
 
@@ -40,7 +40,7 @@ export class PollReferenceStatus implements Status<PollReferenceStatusParams, St
       for (let i = 0; i < maxRetries; i++) {
         await WaitUtil.wait(interval);
         const response = await fetch(url);
-        const { data }: JSONReponse<StatusResultData> = await response.json();
+        const data: StatusResultData = await response.json();
 
         if (data?.signature) {
           resolve(data);

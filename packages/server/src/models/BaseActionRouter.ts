@@ -3,6 +3,10 @@ import {
   StatusCodes,
   DeliveryResponse,
 } from '@bedrock-foundation/sdk';
+import * as JSURL from '@bedrock-foundation/jsurl';
+import {
+  MetadataRequest, MetadataResponse, TransactionRequest, TransactionResponse,
+} from './shared';
 
 export interface ActionRouter<T> {
   logger: typeof console;
@@ -10,8 +14,8 @@ export interface ActionRouter<T> {
   icon: string;
   path: string;
   router: any;
-  get(request: Request, response: Response): Promise<void>;
-  post(request: Request<{}, {}, {}, {}>, response: Response): Promise<void>;
+  get(request: MetadataRequest<T>, response: MetadataResponse): Promise<void>;
+  post(request: TransactionRequest<T>, response: TransactionResponse): Promise<void>;
   createTransaction: (params: T) => Promise<DeliveryResponse>;
 }
 
@@ -47,8 +51,8 @@ export class BaseActionRouter implements ActionRouter<any> {
     this.router.post(this.path, this.post.bind(this));
   }
 
-  async get(request: Request, response: Response): Promise<void> {
-    const { label, icon } = request.query;
+  async get(request: MetadataRequest<any>, response: MetadataResponse): Promise<void> {
+    const { label, icon } = JSURL.parse<any>(request.query.params);
 
     try {
       response.status(StatusCodes.OK).json({

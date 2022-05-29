@@ -14,10 +14,11 @@ import {
   EmptyWalletParams,
 } from '@bedrock-foundation/sdk';
 import * as spl from '@solana/spl-token';
-import express, { Request, Response } from 'express';
+import express from 'express';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
 import { BaseActionRouter, ActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
+import { TransactionRequest, TransactionResponse } from '../../models/shared';
 
 const emptyWallet = new EmptyWalletAction();
 
@@ -30,7 +31,7 @@ export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<
     this.router.post(this.path, this.post.bind(this));
   }
 
-  async post(req: Request<{}, {}, { account: string }, EmptyWalletParams>, res: Response): Promise<void> {
+  async post(req: TransactionRequest<EmptyWalletParams>, res: TransactionResponse): Promise<void> {
     const { account } = req.body;
 
     try {
@@ -46,7 +47,7 @@ export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<
       }
 
       res.status(response.status).json({
-        transaction: response?.txBuffer?.toString('base64'),
+        transaction: response?.txBuffer?.toString('base64') ?? null,
         message: 'Thank you!',
       });
     } catch (e: any) {

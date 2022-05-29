@@ -1,20 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { Bedrock, TokenTypes, TransferParams } from "@bedrock-foundation/sdk";
 import QRCode from "react-qr-code";
-import styles from "../styles/Home.module.css";
 
 const { transfer, pollReferenceStatus } = new Bedrock(
   "https://magically-production.ngrok.io"
 );
 
 function App() {
-  const transferParams = React.useMemo(() => {
+  const [signature, setSignature] = React.useState<string | null>(null);
+
+  const transferParams: TransferParams = React.useMemo(() => {
     return {
       wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
       size: 1,
-      payerToken: TokenTypes.USDC,
+      token: TokenTypes.USDC,
     };
   }, []);
 
@@ -28,6 +28,9 @@ function App() {
     refs: { requestRef },
   } = result;
 
+
+  console.log(link);
+
   React.useEffect(() => {
     const doEffect = async () => {
       const { signature } = await pollReferenceStatus.status({
@@ -35,24 +38,18 @@ function App() {
         interval: 10000,
         maxRetries: 100,
       });
-      console.log(signature);
+
+      setSignature(signature ?? null);
+
     };
     doEffect();
   });
-
 
   return (
     <div className="App">
       <header className="App-header">
         <QRCode value={link} size={256} />
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        {signature ? `Transaction Signature: ${signature}` : "Waiting for confirmation..."}
       </header>
     </div>
   );

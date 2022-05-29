@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "@bedrock-foundation/example-create-react-app",
   "version": "0.0.5",
   "private": true,
   "dependencies": {
@@ -19,6 +19,7 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
