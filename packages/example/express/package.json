@@ -1,6 +1,6 @@
 {
     "name": "@bedrock-foundation/example-express",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Bedrock Express Example",
     "main": "index.js",
     "private": true,
@@ -26,8 +26,8 @@
     "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
-        "@bedrock-foundation/sdk": "^0.0.5",
-        "@bedrock-foundation/server": "^0.0.5",
+        "@bedrock-foundation/sdk": "^0.0.6",
+        "@bedrock-foundation/server": "^0.0.6",
         "@metaplex-foundation/js-next": "^0.9.0",
         "@solana/pay": "^0.2.0",
         "@solana/spl-token": "^0.2.0",
