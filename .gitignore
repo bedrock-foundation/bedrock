@@ -6,4 +6,13 @@ node_modules/
 .vscode
 lerna-debug.log
 **/db
-.yarn/cache/
+.env
+
+# Yarn 2.0
+.pnp.*
+**/.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
