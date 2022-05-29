@@ -3,7 +3,7 @@ import { EmptyWalletAction } from './actions/EmptyWalletAction';
 import { PollReferenceStatus } from './status/PollReferenceStatus';
 
 export class Bedrock {
-  private readonly basePath: string;
+  public readonly basePath: string;
 
   public transfer: TransferAction;
 
@@ -12,7 +12,7 @@ export class Bedrock {
   public pollReferenceStatus: PollReferenceStatus;
 
   constructor(basePath?: string) {
-    this.basePath = basePath ?? 'http://localhost:3000';
+    this.basePath = basePath ?? 'https://pay.bedrock.fyi';
     /**
      * Actions
      */
