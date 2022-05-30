@@ -5,7 +5,7 @@
 </p>
 
 # Bedrock
-Bedrock is a suite of tools for Solana Pay that:
+Bedrock is a framework for Solana Pay that:
 
 - Standardizes the methodology used to create transaction requests
 - Provides implementations for many popular on-chain programs (SystemProgram, SPL, and others)
