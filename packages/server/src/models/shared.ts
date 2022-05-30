@@ -16,3 +16,7 @@ export type TransactionResponse = HTTPResponse<{transaction: string | null, mess
 export type MetadataRequest<MetadataRequestParams> = HTTPRequest<never, { params: JsUrl<MetadataRequestParams> }>
 
 export type MetadataResponse = HTTPResponse<{icon: string, label: string}>
+
+export type NonceRequest<NonceRequestParams> = HTTPRequest<never, { params: JsUrl<NonceRequestParams> }>
+
+export type NonceResponse = HTTPResponse<{ nonce: string | null, message?: string}>

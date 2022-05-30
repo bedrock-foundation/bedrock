@@ -20,7 +20,7 @@ export interface ActionRouter<T extends CreateTransactionRequest<any>> {
   createTransaction: (request: T) => Promise<CreateTransactionResponse>;
 }
 
-export type ActionRouterParams = {
+export interface ActionRouterParams {
   logger?: typeof console;
   label?: string;
   icon?: string;

@@ -46,6 +46,8 @@ export interface CreateLinkRefs {
 export interface CreateLinkResult {
   link: string;
   refs: CreateLinkRefs;
+  nonceUrl?: string;
+  nonce?: string;
 }
 
 export interface Action<T, K extends CreateTransactionRequest<T>> {
