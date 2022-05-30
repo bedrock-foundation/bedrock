@@ -110,4 +110,4 @@ We have a few channels for contact:
 
 ## Reporting security issues
 
-To report a security issue, please follow the guidance on the [SECURITY](.github/SECURITY.md) page.
+To report a security issue, please follow the guidance on the [SECURITY](SECURITY.md) page.
