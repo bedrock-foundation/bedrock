@@ -26,6 +26,7 @@ NOTE: It is a good idea to familiarize yourself with the concepts described in t
 
 
 ## Quickstart Guide
+View a full example [here](https://github.com/bedrock-foundation/bedrock/tree/master/packages/example/create-react-app).
 
 ### Installing
 
@@ -97,7 +98,6 @@ function App() {
   );
 }
 ```
-The link returned is a string representing a Solana Pay Transaction Request HTTP endpoint on the Bedrock servers.
 
 ## Community
 
