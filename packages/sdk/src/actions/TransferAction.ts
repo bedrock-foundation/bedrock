@@ -1,35 +1,35 @@
 import Joi from 'joi';
-import { Keypair, PublicKey } from '@solana/web3.js';
+import { Keypair } from '@solana/web3.js';
 import { encodeURL } from '@solana/pay';
-import base58 from 'bs58';
-import { sha256 } from '@ethersproject/sha2';
-import { Buffer } from 'buffer';
+import * as JSURL from '@bedrock-foundation/jsurl';
 import * as JoiUtil from '../utils/JoiUtil';
 import {
-  Action, ActionParams, CreateLinkResult, DeliveryResponse,
+  Action,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  CreateLinkResult,
+  BaseTransactionRequestParams,
 } from '../models/shared';
 
-export interface TransferParams {
+export type TransferParams = {
   wallet: string;
-  payerToken: string;
+  token: string;
   quantity?: number;
   size?: number;
-  icon?: string;
-  label?: string;
-}
+} & BaseTransactionRequestParams;
 
-export type TransferActionParams = ActionParams<TransferParams>
+export type CreateTransferTransactionRequest = CreateTransactionRequest<TransferParams>;
 
-export interface TransferDeliveryResponse extends DeliveryResponse { }
+export type CreateTransferTransactionResponse = CreateTransactionResponse;
 
 export const transferParamsSchema = Joi.object().keys({
   wallet: Joi.string().required(),
-  payerToken: Joi.string().required(),
-  requestRef: Joi.string().required(),
+  token: Joi.string().required(),
   quantity: Joi.number().optional(),
   size: Joi.number().optional(),
   icon: Joi.string().optional(),
   label: Joi.string().optional(),
+  refs: Joi.array().items(Joi.string()).default([]),
 });
 
 export const transferDeliverySchema = Joi.object().keys({
@@ -39,9 +39,7 @@ export const transferDeliverySchema = Joi.object().keys({
   abortEarly: false,
 });
 
-const BEDROCK_PUBLIC_KEY = new PublicKey('9KiZ7j5BAh5zTs5AaoPnPKotWPj9ZSkxo6Dm9s88DKnT');
-
-export class TransferAction implements Action<TransferParams, TransferActionParams> {
+export class TransferAction implements Action<TransferParams, CreateTransferTransactionRequest> {
   public readonly path: string = '/transfer';
 
   public readonly basePath: string;
@@ -51,35 +49,16 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
   }
 
   createLink(params: TransferParams): CreateLinkResult {
-    console.log('typeof window', typeof window);
     const requestRef = Keypair.generate().publicKey.toBase58();
-    const url = (() => {
-      let result = `${this.basePath}${this.path}?wallet=${params.wallet}&payerToken=${params.payerToken}`;
-      if (params.quantity) {
-        result += `&quantity=${params.quantity}`;
-      } else {
-        result += `&size=${params.size}`;
-      }
-      return result;
-    })();
-    const paramBuffer = Buffer.from(base58.encode(Buffer.from(url)));
-    const finalBuffer = Buffer.concat([BEDROCK_PUBLIC_KEY.toBuffer(), paramBuffer]);
-    const hash = sha256(new Uint8Array(finalBuffer)).slice(2);
-    const paramsRef = new PublicKey(Buffer.from(hash, 'hex')).toBase58();
-    const bedrockRef = BEDROCK_PUBLIC_KEY.toBase58();
-    const urlWithRefs = `${url}&requestRef=${requestRef}`;
-    const link = encodeURL({ link: new URL(urlWithRefs) }).toString();
-
-    console.log(link);
+    params.refs = [requestRef, ...(params?.refs ?? [])];
+    const url = `${this.basePath}${this.path}?params=${JSURL.stringify(params)}`;
+    const link = encodeURL({ link: new URL(url) }).toString();
 
     return {
       link,
       refs: {
         requestRef,
-        paramsRef,
-        bedrockRef,
       },
-
     };
   }
 
@@ -90,7 +69,7 @@ export class TransferAction implements Action<TransferParams, TransferActionPara
     );
   }
 
-  validateDelivery(params: TransferActionParams): JoiUtil.JoiValidatorResponse<TransferActionParams> {
+  validateDelivery(params: CreateTransferTransactionRequest): JoiUtil.JoiValidatorResponse<CreateTransferTransactionRequest> {
     return JoiUtil.validate(
       transferDeliverySchema,
       params,

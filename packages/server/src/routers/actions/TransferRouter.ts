@@ -8,22 +8,24 @@ import {
 import {
   TransferAction,
   TransferParams,
-  TransferActionParams,
-  TransferDeliveryResponse,
+  CreateTransferTransactionRequest,
+  CreateTransferTransactionResponse,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
   TokenTypes,
   TokenInfo,
 } from '@bedrock-foundation/sdk';
-import express, { Request, Response } from 'express';
+import express from 'express';
+import * as JSURL from '@bedrock-foundation/jsurl';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
 import { ActionRouter, BaseActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
+import { TransactionRequest, TransactionResponse } from '../../models/shared';
 
 const transfer = new TransferAction();
 
-export class TransferRouter extends BaseActionRouter implements ActionRouter<TransferActionParams> {
+export class TransferRouter extends BaseActionRouter implements ActionRouter<CreateTransferTransactionRequest> {
   constructor(params: ActionRouterParams = {}) {
     super(params);
     this.path = transfer.path;
@@ -32,13 +34,14 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
     this.router.post(this.path, this.post.bind(this));
   }
 
-  async post(req: Request<{}, {}, { account: string }, TransferParams>, res: Response): Promise<void> {
+  async post(req: TransactionRequest<TransferParams>, res: TransactionResponse): Promise<void> {
     const { account } = req.body;
+    const params = JSURL.parse<TransferParams>(req.query.params);
 
     try {
-      const request: TransferActionParams = {
+      const request: CreateTransferTransactionRequest = {
         account,
-        params: req.query,
+        params,
       };
 
       const response = await this.createTransaction(request);
@@ -48,7 +51,7 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
       }
 
       res.status(response.status).json({
-        transaction: response?.txBuffer?.toString('base64'),
+        transaction: response?.txBuffer?.toString('base64') ?? null,
         message: 'Thank you!',
       });
     } catch (e: any) {
@@ -60,8 +63,8 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
     }
   }
 
-  async createTransaction(request: TransferActionParams): Promise<TransferDeliveryResponse> {
-    const response: TransferDeliveryResponse = {
+  async createTransaction(request: CreateTransferTransactionRequest): Promise<CreateTransferTransactionResponse> {
+    const response: CreateTransferTransactionResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
@@ -72,7 +75,7 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
     const {
       account,
       params,
-    }: TransferActionParams = value;
+    }: CreateTransferTransactionRequest = value;
 
     if (JoiUtil.hasErrors(errors)) {
       const errorMsg = JoiUtil.errorsToMessage(errors);
@@ -84,13 +87,11 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
 
     const {
       wallet,
-      payerToken,
+      token,
       quantity,
       size,
-      requestRef,
+      refs,
     } = params;
-
-    console.log('requestRef', requestRef);
 
     /**
      * Create the transaction
@@ -100,7 +101,7 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
     const ixs: TransactionInstruction[] = [];
 
     try {
-      if (payerToken === TokenTypes.SOL) {
+      if (token === TokenTypes.SOL) {
         const amount: number = (size ? size * LAMPORTS_PER_SOL : quantity) ?? 0;
 
         const merchantTransferIx = SystemProgram.transfer({
@@ -109,10 +110,12 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
           lamports: amount,
         });
 
-        merchantTransferIx.keys.push({ pubkey: new PublicKey(requestRef), isWritable: false, isSigner: false });
+        refs?.forEach((ref: string) => {
+          merchantTransferIx.keys.push({ pubkey: new PublicKey(ref), isWritable: false, isSigner: false });
+        });
 
         ixs.push(merchantTransferIx);
-      } else if (payerToken === TokenTypes.USDC) {
+      } else if (token === TokenTypes.USDC) {
         const usdcTokenInfo: any = TokenInfo[TokenTypes.USDC];
         const usdcTokenAddress = new PublicKey(usdcTokenInfo.address);
         const amount = (size ? size * (10 ** usdcTokenInfo.decimals) : quantity) ?? 0;
@@ -124,7 +127,7 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Tra
             splTokenPublicKey: usdcTokenAddress,
             amount,
             feePayerPublicKey: customerPublicKey,
-            refs: [new PublicKey(requestRef)],
+            refs: refs?.map((ref: string) => new PublicKey(ref)) ?? [],
           },
         ];
 

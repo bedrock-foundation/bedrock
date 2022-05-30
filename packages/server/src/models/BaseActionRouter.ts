@@ -1,18 +1,23 @@
 import express, { Request, Response } from 'express';
 import {
   StatusCodes,
-  DeliveryResponse,
+  CreateTransactionResponse,
+  CreateTransactionRequest,
 } from '@bedrock-foundation/sdk';
+import * as JSURL from '@bedrock-foundation/jsurl';
+import {
+  MetadataRequest, MetadataResponse, TransactionRequest, TransactionResponse,
+} from './shared';
 
-export interface ActionRouter<T> {
+export interface ActionRouter<T extends CreateTransactionRequest<any>> {
   logger: typeof console;
   label: string;
   icon: string;
   path: string;
   router: any;
-  get(request: Request, response: Response): Promise<void>;
-  post(request: Request<{}, {}, {}, {}>, response: Response): Promise<void>;
-  createTransaction: (params: T) => Promise<DeliveryResponse>;
+  get(request: MetadataRequest<T>, response: MetadataResponse): Promise<void>;
+  post(request: TransactionRequest<T>, response: TransactionResponse): Promise<void>;
+  createTransaction: (request: T) => Promise<CreateTransactionResponse>;
 }
 
 export type ActionRouterParams = {
@@ -25,7 +30,7 @@ export type ActionRouterParams = {
 export class BaseActionRouter implements ActionRouter<any> {
   public static readonly label: string = 'Bedrock Foundation';
 
-  public static readonly icon: string = 'https://storage.googleapis.com/magically-assets-production/bedrock-logo.png';
+  public static readonly icon: string = 'https://storage.googleapis.com/bedrock-platform-assets-production-mainnet/brand/bedrock-logo.png';
 
   public logger: typeof console;
 
@@ -47,8 +52,8 @@ export class BaseActionRouter implements ActionRouter<any> {
     this.router.post(this.path, this.post.bind(this));
   }
 
-  async get(request: Request, response: Response): Promise<void> {
-    const { label, icon } = request.query;
+  async get(request: MetadataRequest<any>, response: MetadataResponse): Promise<void> {
+    const { label, icon } = JSURL.parse<any>(request.query.params);
 
     try {
       response.status(StatusCodes.OK).json({
@@ -67,7 +72,7 @@ export class BaseActionRouter implements ActionRouter<any> {
     throw new Error(errorMsg);
   }
 
-  createTransaction(_params: any): Promise<DeliveryResponse> {
+  createTransaction(_params: any): Promise<CreateTransactionResponse> {
     const errorMsg = 'Method not implemented.';
     this.logger.log(errorMsg);
     throw new Error(errorMsg);

@@ -2,6 +2,9 @@
   "name": "bedrock",
   "private": true,
   "scripts": {
+    "dev": "lerna bootstrap && lerna run dev --parallel",
+    "republish": "lerna publish from-package --yes",
+    "clean": "lerna clean --y",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
   },

@@ -1,8 +1,7 @@
 /* eslint-disable no-async-promise-executor */
 import Joi from 'joi';
-import { Status, JSONReponse, StatusResultData } from '../models/shared';
+import { Status, StatusResultData } from '../models/shared';
 import * as JoiUtil from '../utils/JoiUtil';
-import * as WaitUtil from '../utils/WaitUtil';
 
 export interface PollReferenceQueryStringParams {
   ref: string;
@@ -32,24 +31,11 @@ export class PollReferenceStatus implements Status<PollReferenceStatusParams, St
     this.basePath = basePath || 'https://localhost:3001';
   }
 
-  async status(params: PollReferenceStatusParams): Promise<StatusResultData> {
-    return new Promise(async (resolve, reject) => {
-      const { ref, interval = 5000, maxRetries = 10 } = params;
-      const url = `${this.basePath}${this.path}?ref=${ref}`;
-
-      for (let i = 0; i < maxRetries; i++) {
-        await WaitUtil.wait(interval);
-        const response = await fetch(url);
-        const { data }: JSONReponse<StatusResultData> = await response.json();
-
-        if (data?.signature) {
-          resolve(data);
-          return;
-        }
-      }
-
-      reject(new Error('Timeout'));
-    });
+  async status(params: PollReferenceQueryStringParams): Promise<StatusResultData> {
+    const { ref } = params;
+    const url = `${this.basePath}${this.path}?ref=${ref}`;
+    const response = await fetch(url);
+    return await response.json();
   }
 
   validate(params: PollReferenceStatusParams): JoiUtil.JoiValidatorResponse<PollReferenceStatusParams> {

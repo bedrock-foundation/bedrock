@@ -1,59 +1,53 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Bedrock, TokenTypes, TransferParams } from "@bedrock-foundation/sdk";
-import QRCode from "react-qr-code";
-import styles from "../styles/Home.module.css";
+import {
+  Bedrock,
+  StatusResultData,
+  TokenTypes,
+  TransferParams,
+  useCreateLink,
+  usePollReferenceStatus,
+  QRCode,
+} from "@bedrock-foundation/react-sdk";
 
-const { transfer, pollReferenceStatus } = new Bedrock(
-  "https://magically-production.ngrok.io"
-);
+const bedrock = new Bedrock();
+
+const { transfer } = bedrock;
 
 function App() {
-  const transferParams = React.useMemo(() => {
-    return {
-      wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
-      size: 1,
-      payerToken: TokenTypes.USDC,
-    };
-  }, []);
+  const [signature, setSignature] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<Error | null>(null);
+  const [canceled, setCanceled] = React.useState<boolean>(false);
 
-  const result = React.useMemo(
-    () => transfer.createLink(transferParams),
-    [transferParams]
-  );
+  const [transferParams] = React.useState<TransferParams>({
+    wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
+    size: 1,
+    token: TokenTypes.USDC,
+  });
 
   const {
-    link,
-    refs: { requestRef },
-  } = result;
+    link, refs: { requestRef },
+  } = useCreateLink(transfer, transferParams);
 
-  React.useEffect(() => {
-    const doEffect = async () => {
-      const { signature } = await pollReferenceStatus.status({
-        ref: requestRef,
-        interval: 10000,
-        maxRetries: 100,
-      });
-      console.log(signature);
-    };
-    doEffect();
+  const { cancel } = usePollReferenceStatus({
+    ref: requestRef,
+    onComplete: (data: StatusResultData) => {
+      setSignature(data?.signature ?? null);
+    },
+    onError: setError,
+    onCancel: () => setCanceled(true),
+    bedrock,
   });
 
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <QRCode value={link} size={256} />
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <QRCode value={link} size={256} />
+      {signature
+        ? `Transaction Signature: ${signature}`
+        : "Waiting for confirmation..."}
+      {error && `There was an error confirming the transaction: ${error}`}
+      {canceled && `Transaction confirmation polling was canceled.`}
+      <div onClick={() => cancel()}>Cancel</div>
     </div>
   );
 }

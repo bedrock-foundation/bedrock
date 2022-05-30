@@ -1,17 +1,17 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import {
   StatusResult,
 } from '@bedrock-foundation/sdk';
-
-export type HTTPRequest<QueryStringParams> = Request<{}, {}, {}, QueryStringParams>;
-
-export type HTTPResponse<ResponseData> = Response<ResponseData>;
+import {
+  HTTPRequest,
+  HTTPResponse,
+} from './shared';
 
 export interface StatusRouter<QueryStringParams, ResponseData> {
   logger: typeof console;
   path: string;
   router: any;
-  get(request: HTTPRequest<QueryStringParams>, response: HTTPResponse<ResponseData>): Promise<void>;
+  get(request: HTTPRequest<never, QueryStringParams>, response: HTTPResponse<ResponseData>): Promise<void>;
   status(params: QueryStringParams): Promise<StatusResult<ResponseData>>;
 }
 
@@ -36,7 +36,7 @@ export class BaseStatusRouter<QueryStringParams, ResponseData> implements Status
     this.router.get(this.path, this.get.bind(this));
   }
 
-  async get(_request: HTTPRequest<QueryStringParams>, _response: HTTPResponse<ResponseData>): Promise<void> {
+  async get(_request: HTTPRequest<never, QueryStringParams>, _response: HTTPResponse<ResponseData>): Promise<void> {
     const errorMsg = 'Method not implemented.';
     this.logger.log(errorMsg);
     throw new Error(errorMsg);

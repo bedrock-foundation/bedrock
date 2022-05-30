@@ -11,8 +11,9 @@ import express from 'express';
 import { PublicKey } from '@solana/web3.js';
 import RPCConnection from '../../utils/RPCConnection';
 import {
-  BaseStatusRouter, HTTPRequest, HTTPResponse, StatusRouterParams,
+  BaseStatusRouter, StatusRouterParams,
 } from '../../models/BaseStatusRouter';
+import { HTTPRequest, HTTPResponse } from '../../models/shared';
 
 const pollReference = new PollReferenceStatus();
 
@@ -28,7 +29,7 @@ export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStri
     this.router.get(this.path, this.get.bind(this));
   }
 
-  async get(request: HTTPRequest<PollReferenceQueryStringParams>, response: HTTPResponse<StatusResultData>): Promise<void> {
+  async get(request: HTTPRequest<never, PollReferenceQueryStringParams>, response: HTTPResponse<StatusResultData>): Promise<void> {
     try {
       const result = await this.status(request.query);
 
@@ -68,7 +69,6 @@ export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStri
 
     try {
       const signatures = await RPCConnection.getSignaturesForAddress(new PublicKey(ref), {}, 'confirmed');
-      console.log(signatures);
       response.data = { signature: signatures?.[0]?.signature ?? null };
       response.status = StatusCodes.OK;
       return response;

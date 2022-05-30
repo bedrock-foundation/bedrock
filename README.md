@@ -14,9 +14,11 @@ Bedrock is a suite of tools for Solana Pay that:
 
 Bedrock is comprised of two core components: a server-side HTTP server, and a client-side SDK. 
 
-## Official Bedrock Docs and Guides
+## Documentation
+The documentation for this project is currently a WIP. A quickstart guide can be found below for those interested in using Bedrock in their React applications. Examples for server configuration can be found [here](https://github.com/bedrock-foundation/bedrock/tree/master/packages/example/express). Please check back soon for more in-depth guides on using Bedrock, or reach out to sam@bedrock.fyi for more information.
 
-- [Bedrock Official Dcumentation](https://docs.bedrock.fyi)
+### Additional Resources
+
 - [Solana Pay Documentation](https://docs.solanapay.com/)
 - [Solana Pay Transaction Request Spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#specification-transaction-request)
 
@@ -27,29 +29,73 @@ NOTE: It is a good idea to familiarize yourself with the concepts described in t
 
 ### Installing
 
-Install the SDK in your project via NPM.
+Install the SDK in your React project via NPM
 ```bash
-$ npm install --save @bedrock-foundation/sdk
+$ npm install --save @bedrock-foundation/react-sdk
 ```
 
 ### Usage
-In your front-end or back-end, import and initalize the SDK.
+Import and initalize the SDK.
 ```ts
+import React from 'react';
 import {
-  Bedrock, TokenTypes, TransferParams,
-} from '@bedrock-foundation/sdk';
+  Bedrock,
+  StatusResultData,
+  TokenTypes,
+  TransferParams,
+  useCreateLink,
+  usePollReferenceStatus,
+  QRCode,
+} from "@bedrock-foundation/react-sdk";
 
-const { transfer } = new Bedrock();
+const bedrock = new Bedrock();
+
+const { transfer } = bedrock;
 ```
-Create a transfer request link and get a referene to track the transaction later. In this example, we are transfering 1 USDC from the initiating wallet to the public key represents by the wallet parameter.
+Create variables to store state about the transaction. Then create a transfer request link and get a reference to track the transaction later. In this example, we are transfering 1 USDC from the initiating wallet to the public key represents by the `wallet` parameter. Finally, we render a QR code and some details about the transaction to the user.
 ```.ts
-const [transferParams] = React.useState<TransferParams>({
-  wallet: 'Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx',
-  size: 1,
-  payerToken: TokenTypes.USDC,
-});
+function App() {
+  // React state to store information about the transaction
+  const [signature, setSignature] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<Error | null>(null);
+  const [canceled, setCanceled] = React.useState<boolean>(false);
 
-const { link, res }: { string, string } = transfer.createLink(transferParams)
+  // Create the transfer params
+  const [transferParams] = React.useState<TransferParams>({
+    wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
+    size: 1,
+    token: TokenTypes.USDC,
+  });
+
+  // Create the reqeuest link and get a reference to the transaction
+  const {
+    link, refs: { requestRef },
+  } = useCreateLink(transfer, transferParams);
+
+  // Start polling for the status of the newly created transaction
+  const { cancel } = usePollReferenceStatus({
+    ref: requestRef,
+    onComplete: (data: StatusResultData) => {
+      setSignature(data?.signature ?? null);
+    },
+    onError: setError,
+    onCancel: () => setCanceled(true),
+    bedrock,
+  });
+
+  // Render UI to user to scan QR code and get updates on transaction status
+  return (
+    <div>
+      <QRCode value={link} size={256} />
+      {signature
+        ? `Transaction Signature: ${signature}`
+        : "Waiting for confirmation..."}
+      {error && `There was an error confirming the transaction: ${error}`}
+      {canceled && `Transaction confirmation polling was canceled.`}
+      <div onClick={() => cancel()}>Cancel</div>
+    </div>
+  );
+}
 ```
 The link returned is a string representing a Solana Pay Transaction Request HTTP endpoint on the Bedrock servers.
 
@@ -57,11 +103,11 @@ The link returned is a string representing a Solana Pay Transaction Request HTTP
 
 We have a few channels for contact:
 
-- [Discord](https://discord.gg/on_bedrock)
+- [Discord](https://discord.gg/qDJm4GP5)
 - [@on_bedrock](https://twitter.com/on_bedrock) on Twitter
 - [GitHub Issues](https://github.com/bedrock-foundation/bedrock/issues)
 
 
 ## Reporting security issues
 
-To report a security issue, please follow the guidance on the [SECURITY](.github/SECURITY.md) page.
+To report a security issue, please follow the guidance on the [SECURITY](SECURITY.md) page.

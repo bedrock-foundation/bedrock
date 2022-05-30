@@ -2,10 +2,9 @@
   "packages": [
     "packages/example/create-react-app",
     "packages/example/express",
-    "packages/example/nextjs",
-    "packages/marketing",
+    "packages/react-sdk",
     "packages/sdk",
     "packages/server"
   ],
-  "version": "0.0.5"
+  "version": "0.0.9"
 }
