@@ -14,7 +14,10 @@ Bedrock is a suite of tools for Solana Pay that:
 
 Bedrock is comprised of two core components: a server-side HTTP server, and a client-side SDK. 
 
-## Solana Pay Documentation
+## Documentation
+The documentation for this project is currently a WIP. A quickstart guide can be found below for those interested in using Bedrock in their React applications. Examples for server configuration can be found [here](https://github.com/bedrock-foundation/bedrock/tree/master/packages/example/express). Please check back soon for more in-depth guides on using Bedrock, or reach out to sam@bedrock.fyi for more information.
+
+### Additional Resources
 
 - [Solana Pay Documentation](https://docs.solanapay.com/)
 - [Solana Pay Transaction Request Spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#specification-transaction-request)
@@ -49,7 +52,7 @@ const bedrock = new Bedrock();
 
 const { transfer } = bedrock;
 ```
-Create variables to store state about the transaction. Then create a transfer request link and get a reference to track the transaction later. In this example, we are transfering 1 USDC from the initiating wallet to the public key represents by the wallet parameter. Finally, we render a QR code and some details about the transaction to the user.
+Create variables to store state about the transaction. Then create a transfer request link and get a reference to track the transaction later. In this example, we are transfering 1 USDC from the initiating wallet to the public key represents by the `wallet` parameter. Finally, we render a QR code and some details about the transaction to the user.
 ```.ts
 function App() {
   // React state to store information about the transaction
