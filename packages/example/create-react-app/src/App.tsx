@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import {
   Bedrock,
   StatusResultData,
@@ -16,6 +15,8 @@ const { transfer } = bedrock;
 
 function App() {
   const [signature, setSignature] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<Error | null>(null);
+  const [canceled, setCanceled] = React.useState<boolean>(false);
 
   const [transferParams] = React.useState<TransferParams>({
     wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
@@ -27,30 +28,26 @@ function App() {
     link, refs: { requestRef },
   } = useCreateLink(transfer, transferParams);
 
-  const { data, error, cancel } = usePollReferenceStatus({
+  const { cancel } = usePollReferenceStatus({
     ref: requestRef,
     onComplete: (data: StatusResultData) => {
       setSignature(data?.signature ?? null);
     },
-    onError: (error: Error) => {
-      console.log("HIT onError", error);
-    },
-    onCancel: () => {
-      console.log("HIT onCancel");
-    },
+    onError: setError,
+    onCancel: () => setCanceled(true),
     bedrock,
   });
 
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <QRCode value={link} size={256} />
-        {signature
-          ? `Transaction Signature: ${signature}`
-          : "Waiting for confirmation..."}
-        <div onClick={() => cancel()}>Cancel</div>
-      </header>
+    <div>
+      <QRCode value={link} size={256} />
+      {signature
+        ? `Transaction Signature: ${signature}`
+        : "Waiting for confirmation..."}
+      {error && `There was an error confirming the transaction: ${error}`}
+      {canceled && `Transaction confirmation polling was canceled.`}
+      <div onClick={() => cancel()}>Cancel</div>
     </div>
   );
 }
