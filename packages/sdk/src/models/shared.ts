@@ -60,6 +60,17 @@ export interface Action<T, K extends CreateTransactionRequest<T>> {
 * Status
 ******************************************************************************* */
 
+export enum TransactionStatuses {
+  Pending = 'Pending',
+  Scanned = 'Scanned',
+  Confirmed = 'Confirmed',
+  Error = 'Error',
+}
+
+export const createNonceStatusTopic = (nonce: string, status: TransactionStatuses): string => {
+  return `nonce/${nonce}/${status}`;
+};
+
 export interface Status<Params, Result, QueryStringParams> {
   status: (params: Params) => Promise<Result>
   validate: (params: Params) => JoiUtil.JoiValidatorResponse<Params>

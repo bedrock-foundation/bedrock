@@ -13,6 +13,8 @@ import {
   ErrorUtil,
   StatusCodes,
   WaitUtil,
+  TransactionStatuses,
+  createNonceStatusTopic,
 } from '@bedrock-foundation/sdk';
 import jwt from 'jsonwebtoken';
 import express from 'express';
@@ -141,9 +143,20 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
     }
 
     /**
+     * Broadcast the scan to the client
+     */
+    const scannedTopic = createNonceStatusTopic(nonce, TransactionStatuses.Scanned);
+    const customerPublicKey = new PublicKey(account);
+    const wallet = customerPublicKey.toBase58();
+
+    this.io.emit(scannedTopic, {
+      wallet,
+      status: TransactionStatuses.Scanned,
+    });
+
+    /**
      * Create the transaction
      */
-    const customerPublicKey = new PublicKey(account);
 
     let txBuffer: Buffer;
 
@@ -192,28 +205,32 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
         verifySignatures: false,
       });
 
+      const createJwt = (signature: string, wallet: string) => {
+        return jwt.sign(
+          {
+            signature,
+            wallet,
+          },
+          'BEDROCK_AUTHORIZATION_SECRET',
+        );
+      };
+
       const confirmTransaction = async () => {
         try {
           // try to confirm the transaction up to 30 times
           for (let i = 0; i < 30; i++) {
-            console.log(`Nonce: ${nonce}`);
-            console.log(`Attempting to confirm transaction for ref ${keypair.publicKey}`);
             try {
               await WaitUtil.wait(2000);
               const signatures = await RPCConnection.getSignaturesForAddress(keypair.publicKey, {}, 'confirmed');
-              console.log('signatures', signatures);
               if (signatures.length > 0) {
-                console.log('hit here');
-                this.io.emit(nonce, {
-                  signature: signatures[0].signature,
-                  wallet: customerPublicKey.toBase58(),
-                  token: jwt.sign(
-                    {
-                      signature: signatures[0].signature,
-                      wallet: customerPublicKey.toBase58(),
-                    },
-                    'BEDROCK_AUTHORIZATION_SECRET',
-                  ),
+                const confirmedTopic = createNonceStatusTopic(nonce, TransactionStatuses.Confirmed);
+                const signature = signatures[0].signature;
+                const wallet = customerPublicKey.toBase58();
+
+                this.io.emit(confirmedTopic, {
+                  signature,
+                  wallet,
+                  token: createJwt(signature, wallet),
                 });
                 break;
               }

@@ -1,7 +1,10 @@
 import io from 'socket.io-client';
 import React from 'react';
 import {
-  StatusResultData, Bedrock,
+  StatusResultData,
+  Bedrock,
+  TransactionStatuses,
+  createNonceStatusTopic,
 } from '@bedrock-foundation/sdk';
 
 type UseNonceSocketParams = {
@@ -29,15 +32,19 @@ export function useNonceSocket(params: UseNonceSocketParams): UseNonceSocket {
 
       newSocket.on('connect', () => {
         newSocket.once(scannedTopic, (data) => {
+          console.log(data);
           setData(data);
         });
         newSocket.once(confirmedTopic, (data) => {
+          console.log(data);
           setData(data);
         });
         newSocket.once(errorTopic, (data) => {
+          console.log(data);
           setError(data);
         });
         newSocket.once('error', (data) => {
+          console.log(data);
           setError(data);
         });
       });

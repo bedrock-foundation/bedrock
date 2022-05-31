@@ -33,7 +33,6 @@ function App() {
       // setSignature(data?.signature ?? null);
     },
     onError: setError,
-    onCancel: () => setCanceled(true),
     bedrock,
   });
 
