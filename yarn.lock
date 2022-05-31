@@ -2559,6 +2559,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bedrock-foundation/example-create-react-app@workspace:packages/example/create-react-app":
+  version: 0.0.0-use.local
+  resolution: "@bedrock-foundation/example-create-react-app@workspace:packages/example/create-react-app"
+  dependencies:
+    "@bedrock-foundation/sdk": "workspace:^"
+    "@testing-library/jest-dom": ^5.14.1
+    "@testing-library/react": ^13.0.0
+    "@testing-library/user-event": ^13.2.1
+    "@types/jest": ^27.0.1
+    "@types/node": ^16.7.13
+    "@types/react": ^18.0.0
+    "@types/react-dom": ^18.0.0
+    react: ^18.1.0
+    react-dom: ^18.1.0
+    react-scripts: 5.0.1
+    typescript: ^4.4.2
+    web-vitals: ^2.1.0
+  languageName: unknown
+  linkType: soft
+
 "@bedrock-foundation/example-express@workspace:packages/example/express":
   version: 0.0.0-use.local
   resolution: "@bedrock-foundation/example-express@workspace:packages/example/express"
@@ -2610,6 +2630,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bedrock-foundation/jsurl@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@bedrock-foundation/jsurl@npm:1.0.1"
+  checksum: 62f0f7f2ccd48aaba91df513feb3a98093be9425bb34e92027ef6c25400b4995d0cb4ad2574a57d1625072fd2d4e29019134e76ba6145f0f64bd35227e01e13d
+  languageName: node
+  linkType: hard
+
 "@bedrock-foundation/marketing@workspace:packages/marketing":
   version: 0.0.0-use.local
   resolution: "@bedrock-foundation/marketing@workspace:packages/marketing"
@@ -2636,10 +2663,32 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bedrock-foundation/react-sdk@workspace:packages/react-sdk":
+  version: 0.0.0-use.local
+  resolution: "@bedrock-foundation/react-sdk@workspace:packages/react-sdk"
+  dependencies:
+    "@bedrock-foundation/sdk": "workspace:^"
+    "@types/long": ^3.0.32
+    "@types/node": ^17.0.34
+    "@types/react": ^18.0.0
+    "@types/react-dom": ^18.0.0
+    npm-watch: ^0.11.0
+    react-qr-code: ^2.0.7
+    ts-loader: ^5.4.5
+    ts-node-dev: ^1.1.8
+    typescript: ^4.6.4
+    typescript-esm: ^2.0.0
+  peerDependencies:
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  languageName: unknown
+  linkType: soft
+
 "@bedrock-foundation/sdk@workspace:^, @bedrock-foundation/sdk@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@bedrock-foundation/sdk@workspace:packages/sdk"
   dependencies:
+    "@bedrock-foundation/jsurl": ^1.0.1
     "@ethersproject/sha2": ^5.6.0
     "@metaplex-foundation/mpl-token-metadata": ^2.1.0
     "@solana/pay": ^0.2.0
@@ -2647,10 +2696,10 @@ __metadata:
     "@solana/web3.js": 1.36.0
     "@types/chai": ^4.2.3
     "@types/fs-extra": ^8.1.2
+    "@types/jsurl": ^1.2.30
     "@types/long": ^3.0.32
     "@types/mocha": ^2.2.44
     "@types/node": ^17.0.34
-    "@types/node-fetch": ^2.6.1
     bignumber.js: ^9.0.2
     bs58: ^5.0.0
     buffer: ^6.0.3
@@ -2659,7 +2708,7 @@ __metadata:
     dotenv: ^8.2.0
     fs-extra: ^8.1.0
     joi: ^17.4.0
-    json: ^11.0.0
+    jsurl: ^0.1.5
     mocha: ^10.0.0
     npm-watch: ^0.11.0
     ts-loader: ^5.4.5
@@ -2673,6 +2722,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bedrock-foundation/server@workspace:packages/server"
   dependencies:
+    "@bedrock-foundation/jsurl": ^1.0.1
     "@bedrock-foundation/sdk": "workspace:^"
     "@solana/pay": ^0.2.0
     "@solana/spl-token": ^0.2.0
@@ -2680,6 +2730,7 @@ __metadata:
     "@types/chai": ^4.2.3
     "@types/express": ^4.17.13
     "@types/fs-extra": ^8.1.2
+    "@types/jsurl": ^1.2.30
     "@types/long": ^3.0.32
     "@types/mocha": ^2.2.44
     "@types/node": ^17.0.34
@@ -2694,6 +2745,7 @@ __metadata:
     express: ^4.17.1
     fs-extra: ^8.1.0
     joi: ^17.4.0
+    jsurl: ^0.1.5
     mocha: ^8.4.0
     npm-watch: ^0.11.0
     ts-loader: ^5.4.5
@@ -5125,6 +5177,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jsurl@npm:^1.2.30":
+  version: 1.2.30
+  resolution: "@types/jsurl@npm:1.2.30"
+  checksum: c51ff0d159f9e97ca7069cb5aa934ab4f94b1738250cddd1f3e19d12bdb0f6bca7b7ed2579b5de274778d1c3b26b3a89b21f0c108814383cf32f150ff74ca15a
+  languageName: node
+  linkType: hard
+
 "@types/keyv@npm:^3.1.1":
   version: 3.1.4
   resolution: "@types/keyv@npm:3.1.4"
@@ -5159,16 +5218,6 @@ __metadata:
   version: 2.2.48
   resolution: "@types/mocha@npm:2.2.48"
   checksum: fc327012b24b1ee401c76563818c233d9f00a28a9df13f4bab1187af14d7aea9b97ced80f3e71033828459cc0f0616b546a34a3ec27ffa4ba08619aacdebda0f
-  languageName: node
-  linkType: hard
-
-"@types/node-fetch@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "@types/node-fetch@npm:2.6.1"
-  dependencies:
-    "@types/node": "*"
-    form-data: ^3.0.0
-  checksum: a3e5d7f413d1638d795dff03f7b142b1b0e0c109ed210479000ce7b3ea11f9a6d89d9a024c96578d9249570c5fe5287a5f0f4aaba98199222230196ff2d6b283
   languageName: node
   linkType: hard
 
@@ -13802,15 +13851,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "json@npm:11.0.0"
-  bin:
-    json: lib/json.js
-  checksum: 0beb8689722fc30251638543caf791bedc1a25199c18eb0281de115a0dadb00a07d4d36cbd7ff7680e04157fcb2bba76f29ed940b1e4e92f60c6fbaa74523fce
-  languageName: node
-  linkType: hard
-
 "jsonfile@npm:^4.0.0":
   version: 4.0.0
   resolution: "jsonfile@npm:4.0.0"
@@ -13847,6 +13887,13 @@ __metadata:
   version: 5.0.0
   resolution: "jsonpointer@npm:5.0.0"
   checksum: c7ec0b6bb596b81de687bc12945586bbcdc80dfb54919656d2690d76334f796a936270067ee9f1b5bbc2d9ecc551afb366ac35e6685aa61f07b5b68d1e5e857d
+  languageName: node
+  linkType: hard
+
+"jsurl@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "jsurl@npm:0.1.5"
+  checksum: 50b614908d6bdf7800a257d0ecbaf2b8129fbb538db44dc991518034e48b594eca5d7593bdd887a59e48baaa258279aae89f80ac5af200a6c789eb23d45b186f
   languageName: node
   linkType: hard
 
@@ -14891,27 +14938,6 @@ __metadata:
   checksum: ff48d251fc3f827e5b1206cda0ffdaec885e56057ee86a3155e1951bc940fd5f33531774b1cc8414d7668c10a8907f863f6561875ee6e8768931a62121a531a1
   languageName: node
   linkType: hard
-
-"my-app@workspace:packages/example/create-react-app":
-  version: 0.0.0-use.local
-  resolution: "my-app@workspace:packages/example/create-react-app"
-  dependencies:
-    "@bedrock-foundation/sdk": "workspace:^"
-    "@testing-library/jest-dom": ^5.14.1
-    "@testing-library/react": ^13.0.0
-    "@testing-library/user-event": ^13.2.1
-    "@types/jest": ^27.0.1
-    "@types/node": ^16.7.13
-    "@types/react": ^18.0.0
-    "@types/react-dom": ^18.0.0
-    react: ^18.1.0
-    react-dom: ^18.1.0
-    react-qr-code: ^2.0.7
-    react-scripts: 5.0.1
-    typescript: ^4.4.2
-    web-vitals: ^2.1.0
-  languageName: unknown
-  linkType: soft
 
 "nan@npm:^2.12.1":
   version: 2.16.0
