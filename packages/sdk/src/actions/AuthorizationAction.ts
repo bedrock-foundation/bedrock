@@ -11,17 +11,13 @@ import {
   BaseTransactionRequestParams,
 } from '../models/shared';
 
-export type AuthorizationParams = {
-  nonce: string;
-} & BaseTransactionRequestParams;
+export type AuthorizationParams = {} & BaseTransactionRequestParams;
 
 export type CreateAuthorizationTransactionRequest = CreateTransactionRequest<AuthorizationParams>;
 
 export type CreateAuthorizationTransactionResponse = CreateTransactionResponse;
 
-export const authorizationParamsSchema = Joi.object().keys({
-  nonce: Joi.string().required(),
-});
+export const authorizationParamsSchema = Joi.object().keys({});
 
 export const authorizationDeliverySchema = Joi.object().keys({
   account: Joi.string().required(),

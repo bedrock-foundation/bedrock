@@ -146,7 +146,13 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
     try {
       const memoIx = new TransactionInstruction({
         programId: MEMO_PROGRAM_ID,
-        keys: refs?.map((ref) => ({ pubkey: new PublicKey(ref), isWritable: false, isSigner: false })) ?? [],
+        keys: [
+          {
+            pubkey: customerPublicKey,
+            isSigner: true,
+            isWritable: false,
+          },
+        ],
         data: Buffer.from('BEDROCK_AUTHORIZATION', 'utf8'),
       });
       const tx = new Transaction().add(memoIx);
