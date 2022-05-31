@@ -20,9 +20,6 @@ function cors(req, res, next) {
 
 type AppParams = {
   port: number;
-  server: Server;
-  io: any
-  routers: {router: express.Router}[]
 }
 
 class App {
@@ -36,12 +33,10 @@ class App {
 
   constructor(params: AppParams) {
     this.app = express();
-    this.server = params.server;
-    this.server.addListener('request', this.app);
-    this.port = params.port;
-    this.routers = params.routers;
     this.configureMiddleware();
+    this.server = new Server(this.app);
     this.configureRouters();
+    this.port = params.port;
   }
 
   private configureMiddleware() {
@@ -50,8 +45,18 @@ class App {
     this.app.use(json());
   }
 
-  private configureRouters() {
-    this.routers.forEach((router) => {
+  private async configureRouters() {
+    const redis: RedisClientType = createClient();
+    redis.on('error', (err) => console.log('Redis Client Error', err));
+    redis.on('connect', () => console.log('Redis Client Connected'));
+    await redis.connect();
+    const io = configureWebSocket(this.server);
+    [
+      new TransferRouter(),
+      new EmptyWalletRouter(),
+      new PollReferenceRouter(),
+      new AuthorizationRouter({ redis, io }),
+    ].forEach((router) => {
       this.app.use(router.router);
     });
   }
@@ -63,21 +68,6 @@ class App {
   }
 }
 
-const server = new Server();
-const redis: RedisClientType = createClient();
-redis.on('error', (err) => console.log('Redis Client Error', err));
-redis.on('connect', () => console.log('Redis Client Connected'));
-redis.connect();
-const io = configureWebSocket(server);
-
 new App({
   port: 3001,
-  server,
-  io,
-  routers: [
-    new TransferRouter(),
-    new EmptyWalletRouter(),
-    new PollReferenceRouter(),
-    new AuthorizationRouter({ redis, io }),
-  ],
 }).listen();

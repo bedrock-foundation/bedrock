@@ -1,11 +1,8 @@
 import React from 'react';
 import {
   Bedrock,
-  StatusResultData,
-  TokenTypes,
-  TransferParams,
   useCreateNonceLink,
-  usePollReferenceStatus,
+  useNonceSocket,
   QRCode,
 } from "@bedrock-foundation/react-sdk";
 
@@ -20,8 +17,7 @@ function App() {
 
   const {
     result,
-  } = useCreateNonceLink({
-    action: authorization,
+  } = useCreateNonceLink(authorization, {
     params: {},
     onComplete: (result) => {
       console.log(result);
@@ -31,15 +27,15 @@ function App() {
     },
   });
 
-  // const { cancel } = usePollReferenceStatus({
-  //   ref: requestRef,
-  //   onComplete: (data: StatusResultData) => {
-  //     setSignature(data?.signature ?? null);
-  //   },
-  //   onError: setError,
-  //   onCancel: () => setCanceled(true),
-  //   bedrock,
-  // });
+  const { data } = useNonceSocket({
+    nonce: (result as any)?.nonce, 
+    onComplete: (data: any) => {
+      // setSignature(data?.signature ?? null);
+    },
+    onError: setError,
+    onCancel: () => setCanceled(true),
+    bedrock,
+  });
 
 
   return (

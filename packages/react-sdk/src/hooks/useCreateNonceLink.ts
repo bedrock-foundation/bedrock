@@ -3,21 +3,20 @@ import {
   CreateLinkResult,
 } from '@bedrock-foundation/sdk';
 
-type UsePollReferenceStatusParams = {
+type UseCreateNonceLinkConfig = {
   onComplete?: (data: CreateLinkResult) => void,
   onError?: (error: Error) => void,
   onCancel?: () => void,
-  action: any;
   params: any;
 };
 
-type UsePollReferenceStatus = {
+type UseCreateNonceLink = {
   result: CreateLinkResult | null;
   error: Error | null;
   cancel: () => void;
 }
 
-export function useCreateNonceLink(params: UsePollReferenceStatusParams): UsePollReferenceStatus {
+export function useCreateNonceLink(action: any, params: UseCreateNonceLinkConfig): UseCreateNonceLink {
   const [result, setResult] = React.useState<CreateLinkResult | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
@@ -31,7 +30,7 @@ export function useCreateNonceLink(params: UsePollReferenceStatusParams): UsePol
   React.useEffect(() => {
     const doEffect = async () => {
       try {
-        const result = await params.action.createNonceLink(params.params);
+        const result = await action.createNonceLink(params.params);
         setResult(result);
         params?.onComplete?.(result);
         cancel(false);

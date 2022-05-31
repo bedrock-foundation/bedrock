@@ -12,10 +12,13 @@ import {
   JoiUtil,
   ErrorUtil,
   StatusCodes,
+  WaitUtil,
 } from '@bedrock-foundation/sdk';
+import jwt from 'jsonwebtoken';
 import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import { RedisClientType } from 'redis';
+import { Server as SocketServer } from 'socket.io';
 import RPCConnection from '../../utils/RPCConnection';
 import { ActionRouter, BaseActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
 import {
@@ -34,7 +37,7 @@ export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqX
 export class AuthorizationRouter extends BaseActionRouter implements ActionRouter<CreateAuthorizationTransactionRequest> {
   private redis: RedisClientType;
 
-  private io: any;
+  private io: SocketServer;
 
   public noncePath: string;
 
@@ -44,6 +47,7 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
     this.noncePath = authorization.noncePath;
     this.router = express.Router();
     this.redis = params.redis;
+    this.io = params.io;
     this.router.get(this.path, super.get.bind(this));
     this.router.get(this.noncePath, this.createNonce.bind(this));
     this.router.post(this.path, this.post.bind(this));
@@ -143,6 +147,8 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
 
     let txBuffer: Buffer;
 
+    const keypair = Keypair.generate();
+
     try {
       const memoIx = new TransactionInstruction({
         programId: MEMO_PROGRAM_ID,
@@ -152,6 +158,12 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
             isSigner: true,
             isWritable: false,
           },
+          {
+            pubkey: new PublicKey(keypair.publicKey),
+            isSigner: true,
+            isWritable: false,
+          },
+
         ],
         data: Buffer.from('BEDROCK_AUTHORIZATION', 'utf8'),
       });
@@ -173,10 +185,52 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
         verifySignatures: false,
       }));
 
+      orderedTx.partialSign(keypair);
+
       txBuffer = orderedTx.serialize({
         requireAllSignatures: false,
         verifySignatures: false,
       });
+
+      const confirmTransaction = async () => {
+        try {
+          // try to confirm the transaction up to 30 times
+          for (let i = 0; i < 30; i++) {
+            console.log(`Nonce: ${nonce}`);
+            console.log(`Attempting to confirm transaction for ref ${keypair.publicKey}`);
+            try {
+              await WaitUtil.wait(2000);
+              const signatures = await RPCConnection.getSignaturesForAddress(keypair.publicKey, {}, 'confirmed');
+              console.log('signatures', signatures);
+              if (signatures.length > 0) {
+                console.log('hit here');
+                this.io.emit(nonce, {
+                  signature: signatures[0].signature,
+                  wallet: customerPublicKey.toBase58(),
+                  token: jwt.sign(
+                    {
+                      signature: signatures[0].signature,
+                      wallet: customerPublicKey.toBase58(),
+                    },
+                    'BEDROCK_AUTHORIZATION_SECRET',
+                  ),
+                });
+                break;
+              }
+            } catch (e) {
+              this.logger.log(e);
+              this.logger.log(`Failed to confirm tranaction with ref ${ref}`);
+            }
+          }
+
+          console.log('DONE');
+        } catch (e) {
+          this.logger.error('Failed to confirm transaction');
+          this.logger.error(e);
+        }
+      };
+
+      confirmTransaction();
     } catch (e: any) {
       const errorMsg = e.message;
       this.logger.error(e);
