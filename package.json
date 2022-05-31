@@ -2,12 +2,12 @@
   "name": "bedrock",
   "private": true,
   "scripts": {
-    "dev": "lerna bootstrap && lerna run dev --parallel",
+    "dev": "yarn workspaces foreach run dev",
     "republish": "lerna publish from-package --yes",
     "clean": "lerna clean --y",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
-    "build": "cd ./packages/sdk && yarn build && cd ../react-sdk && yarn build && cd ../server && yarn build"
+    "build": "yarn workspaces foreach -pt run build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.20.0",
@@ -25,12 +25,10 @@
     "packages": [
       "packages/example/create-react-app",
       "packages/example/express",
-      "packages/example/nextjs",
-      "packages/marketing",
+      "packages/react-sdk",
       "packages/sdk",
-      "packages/server",
-      "packages/react-sdk"
+      "packages/server"
     ]
   },
-  "packageManager": "yarn@3.1.1"
+  "packageManager": "yarn@3.2.0"
 }
