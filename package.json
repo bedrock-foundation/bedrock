@@ -5,7 +5,7 @@
     "build": "yarn workspaces foreach -pt run build",
     "dev": "yarn workspaces foreach run dev",
     "republish": "lerna publish from-package --yes",
-    "clean": "lerna clean --y",
+    "clean": "find ./packages/ -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
   },
@@ -30,5 +30,5 @@
       "packages/server"
     ]
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.1"
 }
