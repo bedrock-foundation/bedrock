@@ -2,12 +2,12 @@
   "name": "bedrock",
   "private": true,
   "scripts": {
+    "build": "yarn workspaces foreach -pt run build",
     "dev": "yarn workspaces foreach run dev",
     "republish": "lerna publish from-package --yes",
     "clean": "lerna clean --y",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
-    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
-    "build": "yarn workspaces foreach -pt run build"
+    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.20.0",

@@ -53,7 +53,7 @@ module.exports = {
     'no-await-in-loop': 0,
     'no-plusplus': 0,
     'linebreak-style': 0,
-    semi: 0,
+    semi: [2, 'always'],
 
     // should fix these ones
     'no-console': 0,
