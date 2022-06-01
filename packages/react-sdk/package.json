@@ -62,8 +62,5 @@
     "typescript": "^4.6.4",
     "typescript-esm": "^2.0.0"
   },
-  "installConfig": {
-    "hoistingLimits": "workspaces"
-  },
   "gitHead": "e27c545ce4af8a6c467bad92c75a585ccc73f0bb"
 }

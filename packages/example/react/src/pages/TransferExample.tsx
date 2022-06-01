@@ -4,13 +4,13 @@ import {
   TokenTypes,
   TransferParams,
   useCreateLink,
-  usePollReferenceStatus,
-} from "@bedrock-foundation/react-sdk";
+  usePollReferenceStatus
+} from '@bedrock-foundation/react-sdk';
 import QRCode from 'react-qr-code';
 
 const {
-  core: { createTransferLink, getReferenceStatus },
-} = new Bedrock("https://magically-production.ngrok.io");
+  core: { createTransferLink, getReferenceStatus }
+} = new Bedrock('https://magically-production.ngrok.io');
 
 type TransferExampleProps = {};
 
@@ -20,7 +20,7 @@ const TransferExample: React.FC<TransferExampleProps> = ({}) => {
   const [canceled, setCanceled] = React.useState<boolean>(false);
 
   const [transferParams] = React.useState<TransferParams>({
-    wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
+    wallet: 'Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx',
     size: 1,
     token: TokenTypes.USDC,
   });
@@ -42,9 +42,7 @@ const TransferExample: React.FC<TransferExampleProps> = ({}) => {
   return (
     <div>
       <QRCode value={link} size={256} />
-      {signature
-        ? `Transaction Signature: ${signature}`
-        : "Waiting for confirmation..."}
+      {signature ? `Transaction Signature: ${signature}` : 'Waiting for confirmation...'}
       {error && `There was an error confirming the transaction: ${error}`}
       {canceled && `Transaction confirmation polling was canceled.`}
       <div onClick={() => cancel()}>Cancel</div>
