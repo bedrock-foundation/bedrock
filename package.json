@@ -2,9 +2,13 @@
   "name": "bedrock",
   "private": true,
   "scripts": {
-    "dev": "lerna bootstrap && lerna run dev --parallel",
-    "republish": "lerna publish from-package --yes",
-    "clean": "lerna clean --y",
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --stream --parallel dev",
+    "dev:lib": "pnpm -r --stream --parallel --filter=!./packages/example/** dev",
+    "build:lib": "pnpm -r --filter=!./packages/example/** build",
+    "publish": "pnpm -r --filter=!./packages/example/** publish --tolerate-republish",
+    "clean": "pnpm -r clean",
+    "clean:node": "rm -rf node_modules; rm -rf packages/*/node_modules; rm -rf packages/example/*/node_modules",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
   },
@@ -18,7 +22,6 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^4.3.8",
-    "lerna": "^3.22.1",
     "react": "17.0.1"
   }
 }
