@@ -2,10 +2,12 @@
   "name": "bedrock",
   "private": true,
   "scripts": {
-    "build": "yarn workspaces foreach -pt run build",
+    "build": "yarn workspaces foreach -ptR --from '{@bedrock-foundation/sdk,@bedrock-foundation/server,@bedrock-foundation/react-sdk} run build",
     "dev": "yarn workspaces foreach run dev",
-    "republish": "lerna publish from-package --yes",
-    "clean": "find ./packages/ -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "dev:lib": "yarn workspaces foreach -piv --no-private run dev",
+    "build:lib": "yarn workspaces foreach -ptv --no-private run build",
+    "publish": "yarn workspaces foreach -pv --no-private npm publish --tolerate-republish",
+    "clean": "yarn workspaces foreach -pt run clean",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
   },
@@ -23,12 +25,13 @@
   },
   "workspaces": {
     "packages": [
+      "packages/sdk",
+      "packages/react-sdk",
+      "packages/server",
       "packages/example/create-react-app",
       "packages/example/express",
       "packages/example/nextjs",
-      "packages/react-sdk",
-      "packages/sdk",
-      "packages/server"
+      "packages/marketing"
     ]
   },
   "packageManager": "yarn@3.2.1"
