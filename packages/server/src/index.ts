@@ -1,17 +1,7 @@
-import { Application } from 'express';
-
-export * from './models/BaseActionRouter';
+export * from './models/BaseTransactionRouter';
 export * from './models/BaseStatusRouter';
-export * from './routers/actions/TransferRouter';
-export * from './routers/actions/EmptyWalletRouter';
-export * from './routers/actions/AuthorizationRouter';
+export * from './routers/transaction/TransferRouter';
+export * from './routers/transaction/EmptyWalletRouter';
+export * from './routers/transaction/AuthorizationRouter';
 export * from './routers/status/PollReferenceRouter';
 export * from './websocket/configureWebSocket';
-
-// type BedrockServerParams = {
-  
-// };
-
-// export const configureBedrockServer = (app: Application, ) => {
-
-// };

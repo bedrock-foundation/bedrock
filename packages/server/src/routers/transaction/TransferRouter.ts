@@ -20,13 +20,13 @@ import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
-import { ActionRouter, BaseActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
+import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
 import { TransactionRequest, TransactionResponse } from '../../models/shared';
 
 const transfer = new TransferAction();
 
-export class TransferRouter extends BaseActionRouter implements ActionRouter<CreateTransferTransactionRequest> {
-  constructor(params: ActionRouterParams = {}) {
+export class TransferRouter extends BaseTransactionRouter implements TransactionRouter<CreateTransferTransactionRequest> {
+  constructor(params: TransactionRouterParams = {}) {
     super(params);
     this.path = transfer.path;
     this.router = express.Router();

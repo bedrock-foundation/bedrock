@@ -22,21 +22,21 @@ import * as JSURL from '@bedrock-foundation/jsurl';
 import { RedisClientType } from 'redis';
 import { Server as SocketServer } from 'socket.io';
 import RPCConnection from '../../utils/RPCConnection';
-import { ActionRouter, BaseActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
+import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
 import {
   NonceRequest, NonceResponse, TransactionRequest, TransactionResponse,
 } from '../../models/shared';
 
 const authorization = new AuthorizationAction();
 
-type AuthorizationRouterParams = ActionRouterParams & {
+type AuthorizationRouterParams = TransactionRouterParams & {
   redis: RedisClientType;
   io: any;
 }
 
 export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 
-export class AuthorizationRouter extends BaseActionRouter implements ActionRouter<CreateAuthorizationTransactionRequest> {
+export class AuthorizationRouter extends BaseTransactionRouter implements TransactionRouter<CreateAuthorizationTransactionRequest> {
   private redis: RedisClientType;
 
   private io: SocketServer;
@@ -73,7 +73,7 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
 
       res.status(response.status).json({
         transaction: response?.txBuffer?.toString('base64') ?? null,
-        message: 'Thank you!',
+        message: 'Authorize with Bedrock',
       });
     } catch (e: any) {
       this.logger.error(e);
@@ -239,8 +239,6 @@ export class AuthorizationRouter extends BaseActionRouter implements ActionRoute
               this.logger.log(`Failed to confirm tranaction with ref ${ref}`);
             }
           }
-
-          console.log('DONE');
         } catch (e) {
           this.logger.error('Failed to confirm transaction');
           this.logger.error(e);

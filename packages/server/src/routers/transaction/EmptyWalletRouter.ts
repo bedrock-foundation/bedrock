@@ -18,13 +18,13 @@ import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
-import { BaseActionRouter, ActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
+import { BaseTransactionRouter, TransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
 import { TransactionRequest, TransactionResponse } from '../../models/shared';
 
 const emptyWallet = new EmptyWalletAction();
 
-export class EmptyWalletRouter extends BaseActionRouter implements ActionRouter<CreateEmptyWalletTransactionRequest> {
-  constructor(params: ActionRouterParams = {}) {
+export class EmptyWalletRouter extends BaseTransactionRouter implements TransactionRouter<CreateEmptyWalletTransactionRequest> {
+  constructor(params: TransactionRouterParams = {}) {
     super(params);
     this.path = emptyWallet.path;
     this.router = express.Router();
