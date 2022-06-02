@@ -6,3 +6,4 @@ node_modules/
 .vscode
 lerna-debug.log
 **/db
+.yarn/cache/
