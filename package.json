@@ -2,10 +2,10 @@
   "name": "bedrock",
   "private": true,
   "scripts": {
-    "build": "yarn workspaces foreach -ptR --from '{@bedrock-foundation/sdk,@bedrock-foundation/server,@bedrock-foundation/react-sdk} run build",
+    "build": "yarn workspaces foreach -pitv run build",
     "dev": "yarn workspaces foreach run dev",
     "dev:lib": "yarn workspaces foreach -piv --no-private run dev",
-    "build:lib": "yarn workspaces foreach -ptv --no-private run build",
+    "build:lib": "yarn workspaces foreach -pitv --no-private run build",
     "publish": "yarn workspaces foreach -pv --no-private npm publish --tolerate-republish",
     "clean": "yarn workspaces foreach -pt run clean",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
