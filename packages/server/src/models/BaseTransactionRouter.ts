@@ -9,6 +9,10 @@ import {
   MetadataRequest, MetadataResponse, TransactionRequest, TransactionResponse,
 } from './shared';
 
+export type CreateTransferTransactionRequest = CreateTransactionRequest<TransferParams>;
+
+export type CreateTransferTransactionResponse = CreateTransactionResponse;
+
 export interface TransactionRouter<T extends CreateTransactionRequest<any>> {
   logger: typeof console;
   label: string;

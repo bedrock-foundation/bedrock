@@ -4,8 +4,6 @@ import { encodeURL } from '@solana/pay';
 import * as JoiUtil from '../utils/JoiUtil';
 import {
   Action,
-  CreateTransactionRequest,
-  CreateTransactionResponse,
   CreateLinkResult,
   BaseTransactionRequestParams,
 } from '../models/shared';
@@ -25,7 +23,7 @@ export const emptyWalletDeliverySchema = Joi.object().keys({
   abortEarly: false,
 });
 
-export class EmptyWalletAction implements Action<EmptyWalletParams, CreateEmptyWalletTransactionRequest> {
+export class EmptyWalletAction implements Action<EmptyWalletParams> {
   public readonly path: string = '/empty-wallet';
 
   public readonly basePath: string;

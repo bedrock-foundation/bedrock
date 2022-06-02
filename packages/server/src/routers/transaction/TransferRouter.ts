@@ -1,3 +1,4 @@
+import Joi from 'joi';
 import {
   TransactionInstruction,
   LAMPORTS_PER_SOL,
@@ -22,6 +23,23 @@ import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
 import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
 import { TransactionRequest, TransactionResponse } from '../../models/shared';
+
+export const transferParamsSchema = Joi.object().keys({
+  wallet: Joi.string().required(),
+  token: Joi.string().required(),
+  quantity: Joi.number().optional(),
+  size: Joi.number().optional(),
+  icon: Joi.string().optional(),
+  label: Joi.string().optional(),
+  refs: Joi.array().items(Joi.string()).default([]),
+});
+
+export const transferSchema = Joi.object().keys({
+  account: Joi.string().required(),
+  params: transferParamsSchema,
+}).prefs({
+  abortEarly: false,
+});
 
 const transfer = new TransferAction();
 
@@ -63,14 +81,19 @@ export class TransferRouter extends BaseTransactionRouter implements Transaction
     }
   }
 
+  validateTransactionRequest(request: CreateTransferTransactionRequest): JoiUtil.JoiValidatorResponse<CreateTransferTransactionRequest> {
+    return JoiUtil.validate(
+      transferSchema,
+      request,
+    );
+  }
+
   async createTransaction(request: CreateTransferTransactionRequest): Promise<CreateTransferTransactionResponse> {
     const response: CreateTransferTransactionResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = transfer.validateDelivery(
-      request,
-    );
+    const { value, errors } = this.validateTransactionRequest(request);
 
     const {
       account,

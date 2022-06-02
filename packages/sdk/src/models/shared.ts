@@ -26,17 +26,6 @@ export interface BaseTransactionRequestParams {
   refs?: string[];
 }
 
-export interface CreateTransactionRequest<T extends BaseTransactionRequestParams> {
-  account: string;
-  params: T;
-}
-
-export interface CreateTransactionResponse {
-  txBuffer?: Buffer;
-  error?: Error;
-  status: StatusCodes;
-}
-
 export interface CreateLinkRefs {
   requestRef: string;
   paramsRef?: string;
@@ -50,10 +39,8 @@ export interface CreateLinkResult {
   nonce?: string;
 }
 
-export interface Action<T, K extends CreateTransactionRequest<T>> {
-  createLink: (params: K['params']) => CreateLinkResult;
-  validate: (params: K['params']) => JoiUtil.JoiValidatorResponse<T>;
-  validateDelivery: (params: K) => JoiUtil.JoiValidatorResponse<K>;
+export interface Action<Params> {
+  createLink: (params: Params) => CreateLinkResult;
 }
 
 /** ******************************************************************************
