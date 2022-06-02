@@ -17,33 +17,6 @@ export enum StatusCodes {
 }
 
 /** ******************************************************************************
-* Action Creation
-******************************************************************************* */
-
-export interface BaseTransactionRequestParams {
-  icon?: string;
-  label?: string;
-  refs?: string[];
-}
-
-export interface CreateLinkRefs {
-  requestRef: string;
-  paramsRef?: string;
-  bedrockRef?: string;
-}
-
-export interface CreateLinkResult {
-  link: string;
-  refs: CreateLinkRefs;
-  nonceUrl?: string;
-  nonce?: string;
-}
-
-export interface Action<Params> {
-  createLink: (params: Params) => CreateLinkResult;
-}
-
-/** ******************************************************************************
 * Status
 ******************************************************************************* */
 

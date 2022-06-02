@@ -1,3 +1,4 @@
+import Joi from 'joi';
 import {
   TransactionInstruction,
   PublicKey,
@@ -5,16 +6,14 @@ import {
   Keypair,
 } from '@solana/web3.js';
 import {
-  AuthorizationAction,
   AuthorizationParams,
-  CreateAuthorizationTransactionRequest,
-  CreateAuthorizationTransactionResponse,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
   WaitUtil,
   TransactionStatuses,
   createNonceStatusTopic,
+  BedrockCore,
 } from '@bedrock-foundation/sdk';
 import jwt from 'jsonwebtoken';
 import express from 'express';
@@ -24,17 +23,33 @@ import { Server as SocketServer } from 'socket.io';
 import RPCConnection from '../../utils/RPCConnection';
 import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
 import {
-  NonceRequest, NonceResponse, TransactionRequest, TransactionResponse,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  NonceRequest,
+  NonceResponse,
+  TransactionRequest,
+  TransactionResponse,
 } from '../../models/shared';
 
-const authorization = new AuthorizationAction();
+export const emptyWalletParmsSchema = Joi.object().keys({});
 
-type AuthorizationRouterParams = TransactionRouterParams & {
+export const emptyWalletSchema = Joi.object().keys({
+  account: Joi.string().required(),
+  params: emptyWalletParmsSchema,
+}).prefs({
+  abortEarly: false,
+});
+
+export type CreateAuthorizationTransactionRequest = CreateTransactionRequest<AuthorizationParams>;
+
+export type CreateAuthorizationTransactionResponse = CreateTransactionResponse;
+
+export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
+
+export type AuthorizationRouterParams = TransactionRouterParams & {
   redis: RedisClientType;
   io: any;
 }
-
-export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 
 export class AuthorizationRouter extends BaseTransactionRouter implements TransactionRouter<CreateAuthorizationTransactionRequest> {
   private redis: RedisClientType;
@@ -45,8 +60,8 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
 
   constructor(params: AuthorizationRouterParams) {
     super(params);
-    this.path = authorization.path;
-    this.noncePath = authorization.noncePath;
+    this.path = BedrockCore.Paths.Authorization;
+    this.noncePath = BedrockCore.Paths.Nonce;
     this.router = express.Router();
     this.redis = params.redis;
     this.io = params.io;
@@ -110,7 +125,7 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = authorization.validateDelivery(
+    const { value, errors } = this.validateTransactionRequest(
       request,
     );
 

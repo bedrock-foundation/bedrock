@@ -7,22 +7,22 @@ import {
   Transaction,
 } from '@solana/web3.js';
 import {
-  TransferAction,
   TransferParams,
-  CreateTransferTransactionRequest,
-  CreateTransferTransactionResponse,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
   TokenTypes,
   TokenInfo,
+  BedrockCore,
 } from '@bedrock-foundation/sdk';
 import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
 import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
-import { TransactionRequest, TransactionResponse } from '../../models/shared';
+import {
+  TransactionRequest, TransactionResponse, CreateTransactionRequest, CreateTransactionResponse,
+} from '../../models/shared';
 
 export const transferParamsSchema = Joi.object().keys({
   wallet: Joi.string().required(),
@@ -41,12 +41,14 @@ export const transferSchema = Joi.object().keys({
   abortEarly: false,
 });
 
-const transfer = new TransferAction();
+export type CreateTransferTransactionRequest = CreateTransactionRequest<TransferParams>;
+
+export type CreateTransferTransactionResponse = CreateTransactionResponse;
 
 export class TransferRouter extends BaseTransactionRouter implements TransactionRouter<CreateTransferTransactionRequest> {
   constructor(params: TransactionRouterParams = {}) {
     super(params);
-    this.path = transfer.path;
+    this.path = BedrockCore.Paths.Transfer;
     this.router = express.Router();
     this.router.get(this.path, super.get.bind(this));
     this.router.post(this.path, this.post.bind(this));

@@ -1,3 +1,4 @@
+import Joi from 'joi';
 import {
   TransactionInstruction,
   PublicKey,
@@ -5,28 +6,42 @@ import {
   Keypair,
 } from '@solana/web3.js';
 import {
-  EmptyWalletAction,
-  CreateEmptyWalletTransactionRequest,
-  CreateEmptyWalletTransactionResponse,
   JoiUtil,
   ErrorUtil,
   StatusCodes,
   EmptyWalletParams,
+  BedrockCore,
 } from '@bedrock-foundation/sdk';
 import * as spl from '@solana/spl-token';
 import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
-import { BaseTransactionRouter, TransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
-import { TransactionRequest, TransactionResponse } from '../../models/shared';
+import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
+import {
+  TransactionRequest,
+  TransactionResponse,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+} from '../../models/shared';
 
-const emptyWallet = new EmptyWalletAction();
+export const emptyWalletParmsSchema = Joi.object().keys({});
+
+export const emptyWalletSchema = Joi.object().keys({
+  account: Joi.string().required(),
+  params: emptyWalletParmsSchema,
+}).prefs({
+  abortEarly: false,
+});
+
+export type CreateEmptyWalletTransactionRequest = CreateTransactionRequest<EmptyWalletParams>;
+
+export type CreateEmptyWalletTransactionResponse = CreateTransactionResponse;
 
 export class EmptyWalletRouter extends BaseTransactionRouter implements TransactionRouter<CreateEmptyWalletTransactionRequest> {
   constructor(params: TransactionRouterParams = {}) {
     super(params);
-    this.path = emptyWallet.path;
+    this.path = BedrockCore.Paths.EmptyWallet;
     this.router = express.Router();
     this.router.get(this.path, super.get.bind(this));
     this.router.post(this.path, this.post.bind(this));
@@ -61,12 +76,19 @@ export class EmptyWalletRouter extends BaseTransactionRouter implements Transact
     }
   }
 
+  validateTransactionRequest(request: CreateEmptyWalletTransactionRequest): JoiUtil.JoiValidatorResponse<CreateEmptyWalletTransactionRequest> {
+    return JoiUtil.validate(
+      emptyWalletSchema,
+      request,
+    );
+  }
+
   async createTransaction(request: CreateEmptyWalletTransactionRequest): Promise<CreateEmptyWalletTransactionResponse> {
     const response: CreateEmptyWalletTransactionResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = emptyWallet.validateDelivery(
+    const { value, errors } = this.validateTransactionRequest(
       request,
     );
 

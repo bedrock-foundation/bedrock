@@ -1,17 +1,17 @@
 import express, { Request, Response } from 'express';
 import {
+  JoiUtil,
   StatusCodes,
-  CreateTransactionResponse,
-  CreateTransactionRequest,
 } from '@bedrock-foundation/sdk';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import {
-  MetadataRequest, MetadataResponse, TransactionRequest, TransactionResponse,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  MetadataRequest,
+  MetadataResponse,
+  TransactionRequest,
+  TransactionResponse,
 } from './shared';
-
-export type CreateTransferTransactionRequest = CreateTransactionRequest<TransferParams>;
-
-export type CreateTransferTransactionResponse = CreateTransactionResponse;
 
 export interface TransactionRouter<T extends CreateTransactionRequest<any>> {
   logger: typeof console;
@@ -21,7 +21,8 @@ export interface TransactionRouter<T extends CreateTransactionRequest<any>> {
   router: any;
   get(request: MetadataRequest<T>, response: MetadataResponse): Promise<void>;
   post(request: TransactionRequest<T>, response: TransactionResponse): Promise<void>;
-  createTransaction: (request: T) => Promise<CreateTransactionResponse>;
+  validateTransactionRequest(request: T): JoiUtil.JoiValidatorResponse<T>;
+  createTransaction(request: T): Promise<CreateTransactionResponse>;
 }
 
 export interface TransactionRouterParams {
@@ -76,7 +77,13 @@ export class BaseTransactionRouter implements TransactionRouter<any> {
     throw new Error(errorMsg);
   }
 
-  createTransaction(_params: any): Promise<CreateTransactionResponse> {
+  validateTransactionRequest(_request: any): JoiUtil.JoiValidatorResponse<any> {
+    const errorMsg = 'Method not implemented.';
+    this.logger.log(errorMsg);
+    throw new Error(errorMsg);
+  }
+
+  async createTransaction(_params: any): Promise<CreateTransactionResponse> {
     const errorMsg = 'Method not implemented.';
     this.logger.log(errorMsg);
     throw new Error(errorMsg);
