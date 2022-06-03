@@ -8,7 +8,7 @@ import {
 } from "@bedrock-foundation/react-sdk";
 import QRCode from 'react-qr-code';
 
-const { core: { createTransferLink, getReferenceStatus } } = new Bedrock('https://magically-production.ngrok.io');
+const { core: { createTransferLink, getReferenceStatus } } = new Bedrock();
 
 function TransferExample() {
   const [signature, setSignature] = React.useState<string | null>(null);

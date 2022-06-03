@@ -7,9 +7,7 @@ import {
 } from "@bedrock-foundation/react-sdk";
 import QRCode from "react-qr-code";
 
-const {
-  core: { createAuthorizationNonceLink },
-} = new Bedrock("https://magically-production.ngrok.io");
+const { core: { createAuthorizationNonceLink } } = new Bedrock();
 
 function AuthorizationExample() {
   const [authData, setAuthData] = React.useState<AuthorizationData | null>(
