@@ -8,9 +8,9 @@ import {
 } from "@bedrock-foundation/react-sdk";
 import QRCode from 'react-qr-code';
 
-const { core: { createTransferLink } } = new Bedrock('https://magically-production.ngrok.io');
+const { core: { createTransferLink, getReferenceStatus } } = new Bedrock('https://magically-production.ngrok.io');
 
-function App() {
+function TransferExample() {
   const [signature, setSignature] = React.useState<string | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [canceled, setCanceled] = React.useState<boolean>(false);
@@ -28,13 +28,14 @@ function App() {
     },
   } = useCreateLink(createTransferLink, transferParams);
 
-  const { cancel } = usePollReferenceStatus(requestRef, {
-    onComplete: (data: any) => {
-      setSignature(data?.signature ?? null);
-    },
-    onError: setError,
-    onCancel: () => setCanceled(true),
-    interval: 5000,
+  const { cancel } = usePollReferenceStatus(getReferenceStatus, {
+      ref: requestRef,
+      onComplete: (data: any) => {
+        setSignature(data?.signature ?? null);
+      },
+      onError: setError,
+      onCancel: () => setCanceled(true),
+      interval: 5000,
   });
 
   return (
@@ -50,4 +51,4 @@ function App() {
   );
 }
 
-export default App;
+export default TransferExample;

@@ -1,11 +1,13 @@
 import React from 'react';
+import { GetReferenceStatusParams, StatusData } from '..';
 import { useInterval } from './useInterval';
 
-type UsePollReferenceStatusParams = {
+type UsePollReferenceStatusConfig = {
+  ref: string;
   onComplete?: (data: any) => void,
   onError?: (error: Error) => void,
   onCancel?: () => void,
-  interval: number;
+  interval?: number;
 }
 
 type UsePollReferenceStatus = {
@@ -16,36 +18,37 @@ type UsePollReferenceStatus = {
 
 const DEFAULT_INTERVAL = 5000;
 
-export function usePollReferenceStatus(ref: string, params: UsePollReferenceStatusParams): UsePollReferenceStatus {
-  const [data, setData] = React.useState<any | null>(null);
+export function usePollReferenceStatus(
+  getReferenceStatus: (params: GetReferenceStatusParams)=> Promise<StatusData>,
+  config: UsePollReferenceStatusConfig,
+): UsePollReferenceStatus {
+  const [data, setData] = React.useState<StatusData | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
-  // const { pollReferenceStatus } = React.useMemo(() => params.bedrock, [params.bedrock]);
   const cancel = React.useCallback((broadcast: boolean = true) => {
     setIsPolling(false);
     if (broadcast) {
-      params?.onCancel?.();
+      config?.onCancel?.();
     }
   }, [isPolling]);
 
   useInterval(
     async () => {
       try {
-        // const data: any = await pollReferenceStatus.status({ ref: params.ref });
-        const data: any = {};
+        const data: StatusData = await getReferenceStatus({ ref: config.ref });
         if (data.signature !== null) {
           setData(data);
-          params?.onComplete?.(data);
+          config?.onComplete?.(data);
           cancel(false);
         }
       } catch (e: any) {
         console.error(e);
         setError(e as Error);
-        params?.onError?.(e as Error);
+        config?.onError?.(e as Error);
         cancel(false);
       }
     },
-    params.interval ?? DEFAULT_INTERVAL,
+    config.interval ?? DEFAULT_INTERVAL,
     isPolling,
   );
 

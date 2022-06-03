@@ -51,7 +51,7 @@ export class GetReferenceStatusRouter {
     try {
       const result = await this.status(request.query);
 
-      if (isSuccessfulResponse(result)) {
+      if (!isSuccessfulResponse(result)) {
         throw new Error(result?.error?.message);
       }
 
@@ -85,7 +85,10 @@ export class GetReferenceStatusRouter {
       ref,
     }: GetReferenceStatusParams = value;
 
+    console.log(value);
+
     if (JoiUtil.hasErrors(errors)) {
+      console.log('HIT HERE');
       const errorMsg = JoiUtil.errorsToMessage(errors);
       this.logger.error(errorMsg);
       response.status = StatusCodes.UNPROCESSABLE_ENTITY;
@@ -94,6 +97,7 @@ export class GetReferenceStatusRouter {
     }
 
     try {
+      console.log('HIT SIGNATURE');
       const signatures = await RPCConnection.getSignaturesForAddress(new PublicKey(ref), {}, 'confirmed');
       const signature = signatures?.[0]?.signature ?? null;
       response.data = {

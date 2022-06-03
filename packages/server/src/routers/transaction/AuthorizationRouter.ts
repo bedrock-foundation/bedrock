@@ -171,7 +171,6 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
      * Broadcast the scan to the client
      */
     const nonceSocketTopic = createNonceSocketTopic(nonce);
-    console.log('nonceTopic', nonceSocketTopic);
     const customerPublicKey = new PublicKey(account);
     const wallet = customerPublicKey.toBase58();
     const authorizationData: AuthorizationData = {
