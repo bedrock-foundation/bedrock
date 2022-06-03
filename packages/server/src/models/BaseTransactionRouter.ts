@@ -1,15 +1,17 @@
 import express, { Request, Response } from 'express';
-import {
-  StatusCodes,
-  CreateTransactionResponse,
-  CreateTransactionRequest,
-} from '@bedrock-foundation/sdk';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import {
-  MetadataRequest, MetadataResponse, TransactionRequest, TransactionResponse,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  MetadataRequest,
+  MetadataResponse,
+  TransactionRequest,
+  TransactionResponse,
+  StatusCodes,
 } from './shared';
+import * as JoiUtil from '../utils/JoiUtil';
 
-export interface ActionRouter<T extends CreateTransactionRequest<any>> {
+export interface TransactionRouter<T extends CreateTransactionRequest<any>> {
   logger: typeof console;
   label: string;
   icon: string;
@@ -17,17 +19,18 @@ export interface ActionRouter<T extends CreateTransactionRequest<any>> {
   router: any;
   get(request: MetadataRequest<T>, response: MetadataResponse): Promise<void>;
   post(request: TransactionRequest<T>, response: TransactionResponse): Promise<void>;
-  createTransaction: (request: T) => Promise<CreateTransactionResponse>;
+  validateTransactionRequest(request: T): JoiUtil.JoiValidatorResponse<T>;
+  createTransaction(request: T): Promise<CreateTransactionResponse>;
 }
 
-export type ActionRouterParams = {
+export interface TransactionRouterParams {
   logger?: typeof console;
   label?: string;
   icon?: string;
   path?: string;
 }
 
-export class BaseActionRouter implements ActionRouter<any> {
+export class BaseTransactionRouter implements TransactionRouter<any> {
   public static readonly label: string = 'Bedrock Foundation';
 
   public static readonly icon: string = 'https://storage.googleapis.com/bedrock-platform-assets-production-mainnet/brand/bedrock-logo.png';
@@ -42,10 +45,10 @@ export class BaseActionRouter implements ActionRouter<any> {
 
   public router: express.Router;
 
-  constructor(params: ActionRouterParams) {
+  constructor(params: TransactionRouterParams) {
     this.logger = params.logger ?? console;
-    this.label = params.label ?? BaseActionRouter.label;
-    this.icon = params.icon ?? BaseActionRouter.icon;
+    this.label = params.label ?? BaseTransactionRouter.label;
+    this.icon = params.icon ?? BaseTransactionRouter.icon;
     this.path = params.path ?? '';
     this.router = express.Router();
     this.router.get(this.path, this.get.bind(this));
@@ -57,8 +60,8 @@ export class BaseActionRouter implements ActionRouter<any> {
 
     try {
       response.status(StatusCodes.OK).json({
-        label: label ?? this.label ?? BaseActionRouter.label,
-        icon: icon ?? this.icon ?? BaseActionRouter.icon,
+        label: label ?? this.label ?? BaseTransactionRouter.label,
+        icon: icon ?? this.icon ?? BaseTransactionRouter.icon,
       });
     } catch (e) {
       this.logger.error(e);
@@ -72,7 +75,13 @@ export class BaseActionRouter implements ActionRouter<any> {
     throw new Error(errorMsg);
   }
 
-  createTransaction(_params: any): Promise<CreateTransactionResponse> {
+  validateTransactionRequest(_request: any): JoiUtil.JoiValidatorResponse<any> {
+    const errorMsg = 'Method not implemented.';
+    this.logger.log(errorMsg);
+    throw new Error(errorMsg);
+  }
+
+  async createTransaction(_params: any): Promise<CreateTransactionResponse> {
     const errorMsg = 'Method not implemented.';
     this.logger.log(errorMsg);
     throw new Error(errorMsg);

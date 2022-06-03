@@ -1,53 +1,54 @@
 import React from 'react';
-import {
-  StatusResultData, Bedrock, PollReferenceStatusParams,
-} from '@bedrock-foundation/sdk';
+import { GetReferenceStatusParams, StatusData } from '..';
 import { useInterval } from './useInterval';
 
-type UsePollReferenceStatusParams = {
-  onComplete?: (data: StatusResultData) => void,
+type UsePollReferenceStatusConfig = {
+  ref: string;
+  onComplete?: (data: any) => void,
   onError?: (error: Error) => void,
   onCancel?: () => void,
-  bedrock: Bedrock,
-} & PollReferenceStatusParams;
+  interval?: number;
+}
 
 type UsePollReferenceStatus = {
-  data: StatusResultData | null;
+  data: any | null;
   error: Error | null;
   cancel: () => void;
 }
 
 const DEFAULT_INTERVAL = 5000;
 
-export function usePollReferenceStatus(params: UsePollReferenceStatusParams): UsePollReferenceStatus {
-  const [data, setData] = React.useState<StatusResultData | null>(null);
+export function usePollReferenceStatus(
+  getReferenceStatus: (params: GetReferenceStatusParams)=> Promise<StatusData>,
+  config: UsePollReferenceStatusConfig,
+): UsePollReferenceStatus {
+  const [data, setData] = React.useState<StatusData | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
-  const { pollReferenceStatus } = React.useMemo(() => params.bedrock, [params.bedrock]);
   const cancel = React.useCallback((broadcast: boolean = true) => {
     setIsPolling(false);
     if (broadcast) {
-      params?.onCancel?.();
+      config?.onCancel?.();
     }
   }, [isPolling]);
 
   useInterval(
     async () => {
       try {
-        const data = await pollReferenceStatus.status({ ref: params.ref });
+        const data: StatusData = await getReferenceStatus({ ref: config.ref });
         if (data.signature !== null) {
           setData(data);
-          params?.onComplete?.(data);
+          config?.onComplete?.(data);
           cancel(false);
         }
       } catch (e: any) {
         console.error(e);
         setError(e as Error);
-        params?.onError?.(e as Error);
+        config?.onError?.(e as Error);
         cancel(false);
       }
     },
-    params.interval ?? DEFAULT_INTERVAL,
+    config.interval ?? DEFAULT_INTERVAL,
     isPolling,
   );
 

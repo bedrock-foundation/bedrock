@@ -1,7 +1,5 @@
 export * from './Bedrock';
-export * from './actions/TransferAction';
-export * from './actions/EmptyWalletAction';
-export * from './status/PollReferenceStatus';
+export * from './modules/BedrockCore';
+export * from './models/createLink';
 export * from './models/shared';
-export * as JoiUtil from './utils/JoiUtil';
-export * as ErrorUtil from './utils/ErrorUtil';
+export * as WaitUtil from './utils/WaitUtil';

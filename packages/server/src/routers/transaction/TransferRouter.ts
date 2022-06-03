@@ -1,3 +1,4 @@
+import Joi from 'joi';
 import {
   TransactionInstruction,
   LAMPORTS_PER_SOL,
@@ -6,29 +7,51 @@ import {
   Transaction,
 } from '@solana/web3.js';
 import {
-  TransferAction,
   TransferParams,
-  CreateTransferTransactionRequest,
-  CreateTransferTransactionResponse,
-  JoiUtil,
-  ErrorUtil,
-  StatusCodes,
   TokenTypes,
   TokenInfo,
+  BedrockCore,
 } from '@bedrock-foundation/sdk';
 import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
-import { ActionRouter, BaseActionRouter, ActionRouterParams } from '../../models/BaseActionRouter';
-import { TransactionRequest, TransactionResponse } from '../../models/shared';
+import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
+import {
+  TransactionRequest,
+  TransactionResponse,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  StatusCodes,
+  isSuccessfulResponse,
+} from '../../models/shared';
+import * as JoiUtil from '../../utils/JoiUtil';
 
-const transfer = new TransferAction();
+export const transferParamsSchema = Joi.object().keys({
+  wallet: Joi.string().required(),
+  token: Joi.string().required(),
+  quantity: Joi.number().optional(),
+  size: Joi.number().optional(),
+  icon: Joi.string().optional(),
+  label: Joi.string().optional(),
+  refs: Joi.array().items(Joi.string()).default([]),
+});
 
-export class TransferRouter extends BaseActionRouter implements ActionRouter<CreateTransferTransactionRequest> {
-  constructor(params: ActionRouterParams = {}) {
+export const transferSchema = Joi.object().keys({
+  account: Joi.string().required(),
+  params: transferParamsSchema,
+}).prefs({
+  abortEarly: false,
+});
+
+export type CreateTransferTransactionRequest = CreateTransactionRequest<TransferParams>;
+
+export type CreateTransferTransactionResponse = CreateTransactionResponse;
+
+export class TransferRouter extends BaseTransactionRouter implements TransactionRouter<CreateTransferTransactionRequest> {
+  constructor(params: TransactionRouterParams = {}) {
     super(params);
-    this.path = transfer.path;
+    this.path = BedrockCore.Paths.Transfer;
     this.router = express.Router();
     this.router.get(this.path, super.get.bind(this));
     this.router.post(this.path, this.post.bind(this));
@@ -46,7 +69,7 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Cre
 
       const response = await this.createTransaction(request);
 
-      if (!ErrorUtil.isSuccessfulResponse(response)) {
+      if (!isSuccessfulResponse(response)) {
         throw new Error(response?.error?.message);
       }
 
@@ -63,14 +86,19 @@ export class TransferRouter extends BaseActionRouter implements ActionRouter<Cre
     }
   }
 
+  validateTransactionRequest(request: CreateTransferTransactionRequest): JoiUtil.JoiValidatorResponse<CreateTransferTransactionRequest> {
+    return JoiUtil.validate(
+      transferSchema,
+      request,
+    );
+  }
+
   async createTransaction(request: CreateTransferTransactionRequest): Promise<CreateTransferTransactionResponse> {
     const response: CreateTransferTransactionResponse = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = transfer.validateDelivery(
-      request,
-    );
+    const { value, errors } = this.validateTransactionRequest(request);
 
     const {
       account,

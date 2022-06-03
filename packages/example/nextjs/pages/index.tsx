@@ -23,8 +23,6 @@ const Home: NextPage = () => {
 
   const result = React.useMemo(() => transfer.createLink(transferParams), [transferParams]);
 
-  console.log(result);
-
   const {
     link,
     refs: { requestRef },
@@ -37,8 +35,6 @@ const Home: NextPage = () => {
     };
     doEffect();
   });
-
-  console.log(link);
 
   return (
     <div className={styles.container}>
