@@ -17,18 +17,17 @@ export type NonceRequest<NonceRequestParams> = HTTPRequest<never, { params: JsUr
 
 export type NonceResponse = HTTPResponse<{ nonce: string | null, message?: string}>
 
-export interface CreateTransactionRequest<T> {
+export type StatusRequest<StatusRequestParams> = HTTPRequest<never, StatusRequestParams>
+
+export type StatusResponse = HTTPResponse<{ nonce: string | null, message?: string }>
+
+export interface CreateTransactionRequest<Params> {
   account: string;
-  params: T;
+  params: Params;
 }
 
 export interface CreateTransactionResponse {
   txBuffer?: Buffer;
-  error?: Error;
-  status: StatusCodes;
-}
-export interface ReferenceStatusResult<Data> {
-  data?: Data;
   error?: Error;
   status: StatusCodes;
 }

@@ -1,8 +1,5 @@
-/** ******************************************************************************
-* Status
-******************************************************************************* */
-
 export enum TransactionStatuses {
+  Unknown = 'Unknown',
   Pending = 'Pending',
   Scanned = 'Scanned',
   Confirmed = 'Confirmed',
@@ -12,15 +9,6 @@ export enum TransactionStatuses {
 export const createNonceStatusTopic = (nonce: string, status: TransactionStatuses): string => {
   return `nonce/${nonce}/${status}`;
 };
-
-export interface StatusResultData {
-  signature?: string | null;
-  message?: string;
-}
-
-/** ******************************************************************************
-* Tokens
-******************************************************************************* */
 
 export enum TokenTypes {
   SOL = 'SOL',

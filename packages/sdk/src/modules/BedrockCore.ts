@@ -1,12 +1,12 @@
 import {
-  CreateLinkResult,
-  BaseTransactionRequestParams,
-  LinkCreatorParams,
   createLink,
-  CreateNonceLinkResult,
   createNonceLink,
+  CreateLinkResult,
+  CreateNonceLinkResult,
+  LinkCreatorParams,
+  BaseTransactionRequestParams,
 } from '../models/createLink';
-import { StatusResultData, TokenTypes } from '../models/shared';
+import { TokenTypes, TransactionStatuses } from '../models/shared';
 
 export type TransferParams = {
   wallet: string;
@@ -23,6 +23,12 @@ export type AuthorizationParams = {} & BaseTransactionRequestParams;
 export type GetReferenceStatusParams = {
   ref: string;
 };
+
+export type StatusData = {
+  status: TransactionStatuses;
+  signature?: string | null
+  message?: string | null;
+}
 
 export class BedrockCore {
   public static Paths: Record<string, string> = {
@@ -56,7 +62,7 @@ export class BedrockCore {
     );
   }
 
-  async getReferenceStatus(params: GetReferenceStatusParams): Promise<StatusResultData> {
+  async getReferenceStatus(params: GetReferenceStatusParams): Promise<StatusData> {
     const { ref } = params;
     const url = `${this.basePath}${BedrockCore.Paths.ReferenceStatus}?ref=${ref}`;
     const response = await fetch(url);

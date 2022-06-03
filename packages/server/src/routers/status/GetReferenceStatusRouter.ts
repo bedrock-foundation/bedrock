@@ -1,32 +1,53 @@
+import Joi from 'joi';
 import {
-  BedrockCore,
-  PollReferenceQueryStringParams,
-  ReferenceStatusResultData,
+  BedrockCore, GetReferenceStatusParams, StatusData, TransactionStatuses,
 } from '@bedrock-foundation/sdk';
 import express from 'express';
 import { PublicKey } from '@solana/web3.js';
 import RPCConnection from '../../utils/RPCConnection';
 import {
-  BaseStatusRouter, StatusRouterParams,
-} from '../../models/BaseStatusRouter';
-import {
-  HTTPRequest, HTTPResponse, isSuccessfulResponse, ReferenceStatusResult, StatusCodes,
+  HTTPRequest,
+  HTTPResponse,
+  isSuccessfulResponse,
+  StatusCodes,
 } from '../../models/shared';
 import * as JoiUtil from '../../utils/JoiUtil';
 
-export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStringParams, ReferenceStatusResultData> {
+export const getReferenceStatusParamsSchema = Joi.object().keys({
+  ref: Joi.string().required(),
+}).prefs({
+  abortEarly: false,
+});
+
+export interface GetReferenceStatusResult {
+  data?: StatusData;
+  error?: Error;
+  status: StatusCodes;
+}
+
+export type GetReferenceStatusRequest = HTTPRequest<never, GetReferenceStatusParams>
+
+export type GetReferenceStatusResponse = HTTPResponse<StatusData>
+
+export type StatusRouterParams = {
+  logger: typeof console;
+}
+
+export class GetReferenceStatusRouter {
+  public logger: typeof console;
+
   public path: string;
 
   public router: express.Router;
 
-  constructor(params: StatusRouterParams = {}) {
-    super(params);
+  constructor(params: StatusRouterParams) {
+    this.logger = params.logger ?? console;
     this.path = BedrockCore.Paths.ReferenceStatus;
     this.router = express.Router();
     this.router.get(this.path, this.get.bind(this));
   }
 
-  async get(request: HTTPRequest<never, PollReferenceQueryStringParams>, response: HTTPResponse<ReferenceStatusResultData>): Promise<void> {
+  async get(request: GetReferenceStatusRequest, response: GetReferenceStatusResponse): Promise<void> {
     try {
       const result = await this.status(request.query);
 
@@ -38,23 +59,31 @@ export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStri
     } catch (e: any) {
       this.logger.error(e);
       response.status(StatusCodes.BAD_REQUEST).send({
+        status: TransactionStatuses.Unknown,
         message: e.message,
       });
     }
   }
 
-  async status(params: PollReferenceQueryStringParams): Promise<ReferenceStatusResult<ReferenceStatusResultData>> {
-    const response: ReferenceStatusResult<ReferenceStatusResultData> = {
+  validateGetReferenceStatusParams(params: GetReferenceStatusParams): JoiUtil.JoiValidatorResponse<GetReferenceStatusParams> {
+    return JoiUtil.validate(
+      getReferenceStatusParamsSchema,
+      params,
+    );
+  }
+
+  async status(params: GetReferenceStatusParams): Promise<GetReferenceStatusResult> {
+    const response: GetReferenceStatusResult = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = this.validate(
+    const { value, errors } = this.validateGetReferenceStatusParams(
       params,
     );
 
     const {
       ref,
-    }: PollReferenceQueryStringParams = value;
+    }: GetReferenceStatusParams = value;
 
     if (JoiUtil.hasErrors(errors)) {
       const errorMsg = JoiUtil.errorsToMessage(errors);
@@ -66,7 +95,13 @@ export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStri
 
     try {
       const signatures = await RPCConnection.getSignaturesForAddress(new PublicKey(ref), {}, 'confirmed');
-      response.data = { signature: signatures?.[0]?.signature ?? null };
+      const signature = signatures?.[0]?.signature ?? null;
+      response.data = {
+        signature,
+        status: signature
+          ? TransactionStatuses.Confirmed
+          : TransactionStatuses.Pending,
+      };
       response.status = StatusCodes.OK;
       return response;
     } catch (e) {
