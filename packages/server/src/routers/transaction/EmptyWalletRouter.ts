@@ -6,9 +6,6 @@ import {
   Keypair,
 } from '@solana/web3.js';
 import {
-  JoiUtil,
-  ErrorUtil,
-  StatusCodes,
   EmptyWalletParams,
   BedrockCore,
 } from '@bedrock-foundation/sdk';
@@ -23,7 +20,10 @@ import {
   TransactionResponse,
   CreateTransactionRequest,
   CreateTransactionResponse,
+  StatusCodes,
+  isSuccessfulResponse,
 } from '../../models/shared';
+import * as JoiUtil from '../../utils/JoiUtil';
 
 export const emptyWalletParmsSchema = Joi.object().keys({});
 
@@ -59,7 +59,7 @@ export class EmptyWalletRouter extends BaseTransactionRouter implements Transact
 
       const createTxResponse = await this.createTransaction(createTxRequest);
 
-      if (!ErrorUtil.isSuccessfulResponse(createTxResponse)) {
+      if (!isSuccessfulResponse(createTxResponse)) {
         throw new Error(createTxResponse?.error?.message);
       }
 

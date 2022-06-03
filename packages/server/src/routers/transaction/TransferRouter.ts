@@ -8,9 +8,6 @@ import {
 } from '@solana/web3.js';
 import {
   TransferParams,
-  JoiUtil,
-  ErrorUtil,
-  StatusCodes,
   TokenTypes,
   TokenInfo,
   BedrockCore,
@@ -21,8 +18,14 @@ import RPCConnection from '../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
 import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
 import {
-  TransactionRequest, TransactionResponse, CreateTransactionRequest, CreateTransactionResponse,
+  TransactionRequest,
+  TransactionResponse,
+  CreateTransactionRequest,
+  CreateTransactionResponse,
+  StatusCodes,
+  isSuccessfulResponse,
 } from '../../models/shared';
+import * as JoiUtil from '../../utils/JoiUtil';
 
 export const transferParamsSchema = Joi.object().keys({
   wallet: Joi.string().required(),
@@ -66,7 +69,7 @@ export class TransferRouter extends BaseTransactionRouter implements Transaction
 
       const response = await this.createTransaction(request);
 
-      if (!ErrorUtil.isSuccessfulResponse(response)) {
+      if (!isSuccessfulResponse(response)) {
         throw new Error(response?.error?.message);
       }
 

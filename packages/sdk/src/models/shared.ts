@@ -1,21 +1,3 @@
-import * as JoiUtil from '../utils/JoiUtil';
-
-/** ******************************************************************************
-* Status Codes
-******************************************************************************* */
-
-export enum StatusCodes {
-  UNKNOWN_CODE = 0,
-  OK = 200,
-  BAD_REQUEST = 400,
-  UNAUTHORIZED = 401,
-  FORBIDDEN = 403,
-  NOT_FOUND = 404,
-  UNPROCESSABLE_ENTITY = 422,
-  INTERNAL_SERVER_ERROR = 500,
-  GATEWAY_TIMEOUT = 504,
-}
-
 /** ******************************************************************************
 * Status
 ******************************************************************************* */
@@ -31,18 +13,6 @@ export const createNonceStatusTopic = (nonce: string, status: TransactionStatuse
   return `nonce/${nonce}/${status}`;
 };
 
-export interface Status<Params, Result, QueryStringParams> {
-  status: (params: Params) => Promise<Result>
-  validate: (params: Params) => JoiUtil.JoiValidatorResponse<Params>
-  validateQueryStringParams: (params: QueryStringParams) => JoiUtil.JoiValidatorResponse<QueryStringParams>
-}
-
-export interface StatusResult<Data> {
-  data?: Data;
-  error?: Error;
-  status: StatusCodes;
-}
-
 export interface StatusResultData {
   signature?: string | null;
   message?: string;
@@ -55,10 +25,9 @@ export interface StatusResultData {
 export enum TokenTypes {
   SOL = 'SOL',
   USDC = 'USDC',
-  Loyal = 'Loyal',
 }
 
-export const TokenInfo: Record<string, object> = {
+export const TokenInfo: Record<TokenTypes, object> = {
   [TokenTypes.SOL]: {
     sign: '◎',
     chainId: 103,
@@ -86,21 +55,6 @@ export const TokenInfo: Record<string, object> = {
       coingeckoId: 'usd-coin',
       serumV3Usdt: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
       website: 'https://www.centre.io/',
-    },
-  },
-  [TokenTypes.Loyal]: {
-    sign: 'L',
-    chainId: 101,
-    address: 'ASUwfYAFCkuzgeJUxwvRZ5Pg4CGWUSiG7AKbdun34XgP',
-    symbol: 'LOYAL',
-    name: 'Loyal Rewards',
-    decimals: 0,
-    logoURI: 'https://storage.googleapis.com/magically-assets-production/loyal-token/icon.png',
-    tags: [
-      'stablecoin',
-    ],
-    extensions: {
-      website: 'https://loyal.fyi',
     },
   },
 };

@@ -1,11 +1,7 @@
 import {
-  PollReferenceStatus,
+  BedrockCore,
   PollReferenceQueryStringParams,
-  StatusResult,
-  StatusCodes,
-  JoiUtil,
-  ErrorUtil,
-  StatusResultData,
+  ReferenceStatusResultData,
 } from '@bedrock-foundation/sdk';
 import express from 'express';
 import { PublicKey } from '@solana/web3.js';
@@ -13,27 +9,28 @@ import RPCConnection from '../../utils/RPCConnection';
 import {
   BaseStatusRouter, StatusRouterParams,
 } from '../../models/BaseStatusRouter';
-import { HTTPRequest, HTTPResponse } from '../../models/shared';
+import {
+  HTTPRequest, HTTPResponse, isSuccessfulResponse, ReferenceStatusResult, StatusCodes,
+} from '../../models/shared';
+import * as JoiUtil from '../../utils/JoiUtil';
 
-const pollReference = new PollReferenceStatus();
-
-export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStringParams, StatusResultData> {
+export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStringParams, ReferenceStatusResultData> {
   public path: string;
 
   public router: express.Router;
 
   constructor(params: StatusRouterParams = {}) {
     super(params);
-    this.path = pollReference.path;
+    this.path = BedrockCore.Paths.ReferenceStatus;
     this.router = express.Router();
     this.router.get(this.path, this.get.bind(this));
   }
 
-  async get(request: HTTPRequest<never, PollReferenceQueryStringParams>, response: HTTPResponse<StatusResultData>): Promise<void> {
+  async get(request: HTTPRequest<never, PollReferenceQueryStringParams>, response: HTTPResponse<ReferenceStatusResultData>): Promise<void> {
     try {
       const result = await this.status(request.query);
 
-      if (!ErrorUtil.isSuccessfulResponse(result)) {
+      if (isSuccessfulResponse(result)) {
         throw new Error(result?.error?.message);
       }
 
@@ -46,12 +43,12 @@ export class PollReferenceRouter extends BaseStatusRouter<PollReferenceQueryStri
     }
   }
 
-  async status(params: PollReferenceQueryStringParams): Promise<StatusResult<StatusResultData>> {
-    const response: StatusResult<StatusResultData> = {
+  async status(params: PollReferenceQueryStringParams): Promise<ReferenceStatusResult<ReferenceStatusResultData>> {
+    const response: ReferenceStatusResult<ReferenceStatusResultData> = {
       status: StatusCodes.UNKNOWN_CODE,
     };
 
-    const { value, errors } = pollReference.validateQueryStringParams(
+    const { value, errors } = this.validate(
       params,
     );
 

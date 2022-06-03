@@ -7,9 +7,6 @@ import {
 } from '@solana/web3.js';
 import {
   AuthorizationParams,
-  JoiUtil,
-  ErrorUtil,
-  StatusCodes,
   WaitUtil,
   TransactionStatuses,
   createNonceStatusTopic,
@@ -29,13 +26,16 @@ import {
   NonceResponse,
   TransactionRequest,
   TransactionResponse,
+  StatusCodes,
+  isSuccessfulResponse,
 } from '../../models/shared';
+import * as JoiUtil from '../../utils/JoiUtil';
 
-export const emptyWalletParmsSchema = Joi.object().keys({});
+export const authorizationParmsSchema = Joi.object().keys({});
 
-export const emptyWalletSchema = Joi.object().keys({
+export const authorizationSchema = Joi.object().keys({
   account: Joi.string().required(),
-  params: emptyWalletParmsSchema,
+  params: authorizationParmsSchema,
 }).prefs({
   abortEarly: false,
 });
@@ -82,7 +82,7 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
 
       const response = await this.createTransaction(request);
 
-      if (!ErrorUtil.isSuccessfulResponse(response)) {
+      if (!isSuccessfulResponse(response)) {
         throw new Error(response?.error?.message);
       }
 
@@ -118,6 +118,13 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
         message: 'Failed to create nonce.',
       });
     }
+  }
+
+  validateTransactionRequest(request: CreateAuthorizationTransactionRequest): JoiUtil.JoiValidatorResponse<CreateAuthorizationTransactionRequest> {
+    return JoiUtil.validate(
+      authorizationSchema,
+      request,
+    );
   }
 
   async createTransaction(request: CreateAuthorizationTransactionRequest): Promise<CreateAuthorizationTransactionResponse> {

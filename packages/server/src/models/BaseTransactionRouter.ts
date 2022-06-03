@@ -1,8 +1,4 @@
 import express, { Request, Response } from 'express';
-import {
-  JoiUtil,
-  StatusCodes,
-} from '@bedrock-foundation/sdk';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import {
   CreateTransactionRequest,
@@ -11,7 +7,9 @@ import {
   MetadataResponse,
   TransactionRequest,
   TransactionResponse,
+  StatusCodes,
 } from './shared';
+import * as JoiUtil from '../utils/JoiUtil';
 
 export interface TransactionRouter<T extends CreateTransactionRequest<any>> {
   logger: typeof console;

@@ -1,10 +1,5 @@
 import { JsUrl } from '@bedrock-foundation/jsurl';
-import { StatusCodes } from '@bedrock-foundation/sdk';
 import { Request, Response } from 'express';
-
-/** ******************************************************************************
-* HTTP
-******************************************************************************* */
 
 export type HTTPRequest<PostBody, QueryStringParams> = Request<{}, {}, PostBody, QueryStringParams>;
 
@@ -32,3 +27,22 @@ export interface CreateTransactionResponse {
   error?: Error;
   status: StatusCodes;
 }
+export interface ReferenceStatusResult<Data> {
+  data?: Data;
+  error?: Error;
+  status: StatusCodes;
+}
+
+export enum StatusCodes {
+  UNKNOWN_CODE = 0,
+  OK = 200,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
+  NOT_FOUND = 404,
+  UNPROCESSABLE_ENTITY = 422,
+  INTERNAL_SERVER_ERROR = 500,
+  GATEWAY_TIMEOUT = 504,
+}
+
+export const isSuccessfulResponse = (response: CreateTransactionResponse): boolean => response.status === StatusCodes.OK;
