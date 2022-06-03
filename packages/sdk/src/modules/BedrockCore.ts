@@ -20,6 +20,13 @@ export type EmptyWalletParams = {} & BaseTransactionRequestParams;
 
 export type AuthorizationParams = {} & BaseTransactionRequestParams;
 
+export type AuthorizationData = {
+  wallet: string;
+  status: TransactionStatuses,
+  signature: string | null,
+  token: string | null,
+}
+
 export type GetReferenceStatusParams = {
   ref: string;
 };
@@ -45,15 +52,15 @@ export class BedrockCore {
     this.basePath = params.basePath ?? 'https://pay.bedrock.fyi';
   }
 
-  createTransferLink(params: TransferParams): CreateLinkResult {
+  createTransferLink = (params: TransferParams): CreateLinkResult => {
     return createLink<TransferParams>(this.basePath, BedrockCore.Paths.Transfer, params);
   }
 
-  createEmptyWalletLink(params: EmptyWalletParams): CreateLinkResult {
+  createEmptyWalletLink = (params: EmptyWalletParams): CreateLinkResult => {
     return createLink<EmptyWalletParams>(this.basePath, BedrockCore.Paths.EmptyWallet, params);
   }
 
-  async createAuthorizationNonceLink(params: AuthorizationParams): Promise<CreateNonceLinkResult> {
+  createAuthorizationNonceLink = async (params: AuthorizationParams): Promise<CreateNonceLinkResult> => {
     return await createNonceLink<AuthorizationParams>(
       this.basePath,
       BedrockCore.Paths.Authorization,
@@ -62,7 +69,7 @@ export class BedrockCore {
     );
   }
 
-  async getReferenceStatus(params: GetReferenceStatusParams): Promise<StatusData> {
+  getReferenceStatus = async (params: GetReferenceStatusParams): Promise<StatusData> => {
     const { ref } = params;
     const url = `${this.basePath}${BedrockCore.Paths.ReferenceStatus}?ref=${ref}`;
     const response = await fetch(url);

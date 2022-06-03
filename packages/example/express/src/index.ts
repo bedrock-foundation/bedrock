@@ -5,7 +5,7 @@ import { json } from 'body-parser';
 import {
   TransferRouter,
   EmptyWalletRouter,
-  PollReferenceRouter,
+  GetReferenceStatusRouter,
   AuthorizationRouter,
   configureWebSocket,
 } from '@bedrock-foundation/server';
@@ -54,7 +54,7 @@ class App {
     [
       new TransferRouter(),
       new EmptyWalletRouter(),
-      new PollReferenceRouter(),
+      new GetReferenceStatusRouter({ logger: console }),
       new AuthorizationRouter({ redis, io }),
     ].forEach((router) => {
       this.app.use(router.router);

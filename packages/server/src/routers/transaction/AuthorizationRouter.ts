@@ -9,8 +9,9 @@ import {
   AuthorizationParams,
   WaitUtil,
   TransactionStatuses,
-  createNonceStatusTopic,
+  createNonceSocketTopic,
   BedrockCore,
+  AuthorizationData,
 } from '@bedrock-foundation/sdk';
 import jwt from 'jsonwebtoken';
 import express from 'express';
@@ -31,7 +32,9 @@ import {
 } from '../../models/shared';
 import * as JoiUtil from '../../utils/JoiUtil';
 
-export const authorizationParmsSchema = Joi.object().keys({});
+export const authorizationParmsSchema = Joi.object().keys({
+  refs: Joi.array().items(Joi.string()).default([]),
+});
 
 export const authorizationSchema = Joi.object().keys({
   account: Joi.string().required(),
@@ -61,7 +64,7 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
   constructor(params: AuthorizationRouterParams) {
     super(params);
     this.path = BedrockCore.Paths.Authorization;
-    this.noncePath = BedrockCore.Paths.Nonce;
+    this.noncePath = BedrockCore.Paths.AuthorizationNonce;
     this.router = express.Router();
     this.redis = params.redis;
     this.io = params.io;
@@ -167,14 +170,18 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
     /**
      * Broadcast the scan to the client
      */
-    const scannedTopic = createNonceStatusTopic(nonce, TransactionStatuses.Scanned);
+    const nonceSocketTopic = createNonceSocketTopic(nonce);
+    console.log('nonceTopic', nonceSocketTopic);
     const customerPublicKey = new PublicKey(account);
     const wallet = customerPublicKey.toBase58();
-
-    this.io.emit(scannedTopic, {
+    const authorizationData: AuthorizationData = {
       wallet,
       status: TransactionStatuses.Scanned,
-    });
+      signature: null,
+      token: null,
+    };
+
+    this.io.emit(nonceSocketTopic, authorizationData);
 
     /**
      * Create the transaction
@@ -245,15 +252,16 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
               await WaitUtil.wait(2000);
               const signatures = await RPCConnection.getSignaturesForAddress(keypair.publicKey, {}, 'confirmed');
               if (signatures.length > 0) {
-                const confirmedTopic = createNonceStatusTopic(nonce, TransactionStatuses.Confirmed);
                 const signature = signatures[0].signature;
-                const wallet = customerPublicKey.toBase58();
 
-                this.io.emit(confirmedTopic, {
-                  signature,
+                const authorizationData: AuthorizationData = {
                   wallet,
+                  status: TransactionStatuses.Confirmed,
+                  signature,
                   token: createJwt(signature, wallet),
-                });
+                };
+
+                this.io.emit(nonceSocketTopic, authorizationData);
                 break;
               }
             } catch (e) {

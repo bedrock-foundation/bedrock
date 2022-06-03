@@ -1,17 +1,14 @@
 import React from 'react';
 import {
   Bedrock,
-  StatusResultData,
   TokenTypes,
   TransferParams,
   useCreateLink,
   usePollReferenceStatus,
-  QRCode,
 } from "@bedrock-foundation/react-sdk";
+import QRCode from 'react-qr-code';
 
-const bedrock = new Bedrock('https://magically-production.ngrok.io');
-
-const { transfer } = bedrock;
+const { core: { createTransferLink } } = new Bedrock('https://magically-production.ngrok.io');
 
 function App() {
   const [signature, setSignature] = React.useState<string | null>(null);
@@ -25,19 +22,20 @@ function App() {
   });
 
   const {
-    link, refs: { requestRef },
-  } = useCreateLink(transfer, transferParams);
+    link, 
+    refs: { 
+      requestRef
+    },
+  } = useCreateLink(createTransferLink, transferParams);
 
-  const { cancel } = usePollReferenceStatus({
-    ref: requestRef,
-    onComplete: (data: StatusResultData) => {
+  const { cancel } = usePollReferenceStatus(requestRef, {
+    onComplete: (data: any) => {
       setSignature(data?.signature ?? null);
     },
     onError: setError,
     onCancel: () => setCanceled(true),
-    bedrock,
+    interval: 5000,
   });
-
 
   return (
     <div>

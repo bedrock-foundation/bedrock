@@ -6,8 +6,8 @@ export enum TransactionStatuses {
   Error = 'Error',
 }
 
-export const createNonceStatusTopic = (nonce: string, status: TransactionStatuses): string => {
-  return `nonce/${nonce}/${status}`;
+export const createNonceSocketTopic = (nonce: string): string => {
+  return `nonce/${nonce}`;
 };
 
 export enum TokenTypes {

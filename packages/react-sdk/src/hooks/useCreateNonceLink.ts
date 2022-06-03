@@ -1,43 +1,46 @@
 import React from 'react';
 import {
-  CreateLinkResult,
+  CreateNonceLinkResult,
 } from '@bedrock-foundation/sdk';
 
-type UseCreateNonceLinkConfig = {
-  onComplete?: (data: CreateLinkResult) => void,
+type UseCreateNonceLinkConfig<T> = {
+  onComplete?: (result: CreateNonceLinkResult) => void,
   onError?: (error: Error) => void,
   onCancel?: () => void,
-  params: any;
+  params: T;
 };
 
 type UseCreateNonceLink = {
-  result: CreateLinkResult | null;
+  result: CreateNonceLinkResult | null;
   error: Error | null;
   cancel: () => void;
 }
 
-export function useCreateNonceLink(action: any, params: UseCreateNonceLinkConfig): UseCreateNonceLink {
-  const [result, setResult] = React.useState<CreateLinkResult | null>(null);
+export function useCreateNonceLink<T>(
+  createNonceLink: (params: T) => Promise<CreateNonceLinkResult>,
+  config: UseCreateNonceLinkConfig<T> = { params: {} as T },
+): UseCreateNonceLink {
+  const [result, setResult] = React.useState<CreateNonceLinkResult | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
   const cancel = React.useCallback((broadcast: boolean = true) => {
     setIsPolling(false);
     if (broadcast) {
-      params?.onCancel?.();
+      config?.onCancel?.();
     }
   }, [isPolling]);
 
   React.useEffect(() => {
     const doEffect = async () => {
       try {
-        const result = await action.createNonceLink(params.params);
+        const result = await createNonceLink(config.params);
         setResult(result);
-        params?.onComplete?.(result);
+        config?.onComplete?.(result);
         cancel(false);
       } catch (e: any) {
         console.error(e);
         setError(e as Error);
-        params?.onError?.(e as Error);
+        config?.onError?.(e as Error);
         cancel(false);
       }
     };

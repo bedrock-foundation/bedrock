@@ -3,21 +3,18 @@ import {
   Bedrock,
   useCreateNonceLink,
   useNonceSocket,
-  QRCode,
+  AuthorizationData,
 } from "@bedrock-foundation/react-sdk";
+import QRCode from 'react-qr-code';
 
-const bedrock = new Bedrock("https://magically-production.ngrok.io");
+const { core: { createAuthorizationNonceLink } } = new Bedrock("https://magically-production.ngrok.io");
 
-const { authorization } = bedrock;
 
 function App() {
-  const [signature, setSignature] = React.useState<string | null>(null);
+  const [authData, setAuthData] = React.useState<AuthorizationData | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
-  const [canceled, setCanceled] = React.useState<boolean>(false);
 
-  const {
-    result,
-  } = useCreateNonceLink(authorization, {
+  const { result } = useCreateNonceLink(createAuthorizationNonceLink, {
     params: {},
     onComplete: (result) => {
       console.log(result);
@@ -27,24 +24,22 @@ function App() {
     },
   });
 
-  const { data } = useNonceSocket({
-    nonce: (result as any)?.nonce, 
-    onComplete: (data: any) => {
-      // setSignature(data?.signature ?? null);
+  useNonceSocket<AuthorizationData>({
+    nonce: result?.nonce ?? '', 
+    onChange: (data: AuthorizationData) => {
+      setAuthData(data);
     },
     onError: setError,
-    bedrock,
   });
-
 
   return (
     <div>
       <QRCode value={result?.link ?? ""} size={256} />
-      {signature
-        ? `Transaction Signature: ${signature}`
-        : "Waiting for confirmation..."}
+      <p>{"Signature: " + (authData?.signature ?? "Pending")}</p>
+      <p>{"Status: " + (authData?.status ?? "Waiting for scan...")}</p>
+      <p>{"Scanned By: " + (authData?.wallet ?? "Waiting for scan...")}</p>
+      <p>{"Token: " + (authData?.token ?? "Waiting for confirmation...")}</p>
       {error && `There was an error confirming the transaction: ${error}`}
-      {canceled && `Transaction confirmation polling was canceled.`}
     </div>
   );
 }

@@ -1,29 +1,26 @@
 import React from 'react';
-import {
-  StatusResultData, Bedrock, PollReferenceStatusParams,
-} from '@bedrock-foundation/sdk';
 import { useInterval } from './useInterval';
 
 type UsePollReferenceStatusParams = {
-  onComplete?: (data: StatusResultData) => void,
+  onComplete?: (data: any) => void,
   onError?: (error: Error) => void,
   onCancel?: () => void,
-  bedrock: Bedrock,
-} & PollReferenceStatusParams;
+  interval: number;
+}
 
 type UsePollReferenceStatus = {
-  data: StatusResultData | null;
+  data: any | null;
   error: Error | null;
   cancel: () => void;
 }
 
 const DEFAULT_INTERVAL = 5000;
 
-export function usePollReferenceStatus(params: UsePollReferenceStatusParams): UsePollReferenceStatus {
-  const [data, setData] = React.useState<StatusResultData | null>(null);
+export function usePollReferenceStatus(ref: string, params: UsePollReferenceStatusParams): UsePollReferenceStatus {
+  const [data, setData] = React.useState<any | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
-  const { pollReferenceStatus } = React.useMemo(() => params.bedrock, [params.bedrock]);
+  // const { pollReferenceStatus } = React.useMemo(() => params.bedrock, [params.bedrock]);
   const cancel = React.useCallback((broadcast: boolean = true) => {
     setIsPolling(false);
     if (broadcast) {
@@ -34,7 +31,8 @@ export function usePollReferenceStatus(params: UsePollReferenceStatusParams): Us
   useInterval(
     async () => {
       try {
-        const data = await pollReferenceStatus.status({ ref: params.ref });
+        // const data: any = await pollReferenceStatus.status({ ref: params.ref });
+        const data: any = {};
         if (data.signature !== null) {
           setData(data);
           params?.onComplete?.(data);
