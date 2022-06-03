@@ -1,6 +1,8 @@
 {
   "packages": [
+    "packages/example/create-react-app",
     "packages/example/express",
+    "packages/react-sdk",
     "packages/sdk",
     "packages/server"
   ],
