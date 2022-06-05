@@ -16,7 +16,8 @@
     "watch": {
         "watch": {
             "patterns": [
-                "src"
+                "src",
+                "node_modules/@bedrock-foundation/server/lib/**/*"
             ],
             "quiet": false,
             "legacyWatch": true,

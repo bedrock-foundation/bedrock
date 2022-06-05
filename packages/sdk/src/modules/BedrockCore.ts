@@ -8,12 +8,19 @@ import {
 } from '../models/createLink';
 import { TokenTypes, TransactionStatuses } from '../models/shared';
 
+export interface TokenGate {
+  collection: string;
+  traits?: Record<string, string | number>
+  discountPercentage?: number;
+}
+
 export type TransferParams = {
   wallet: string;
   token?: TokenTypes;
   tokenAddress?: string;
   quantity?: number;
   size?: number;
+  gate?: TokenGate;
 } & BaseTransactionRequestParams;
 
 export type EmptyWalletParams = {} & BaseTransactionRequestParams;

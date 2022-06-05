@@ -12,9 +12,9 @@ import {
 import * as spl from '@solana/spl-token';
 import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
-import RPCConnection from '../../utils/RPCConnection';
-import SolanaUtil, { TransferSplTokenParams } from '../../utils/SolanaUtil';
-import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
+import RPCConnection from '../../../utils/RPCConnection';
+import SolanaUtil, { TransferSplTokenParams } from '../../../utils/SolanaUtil';
+import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../../models/BaseTransactionRouter';
 import {
   TransactionRequest,
   TransactionResponse,
@@ -22,8 +22,8 @@ import {
   CreateTransactionResponse,
   StatusCodes,
   isSuccessfulResponse,
-} from '../../models/shared';
-import * as JoiUtil from '../../utils/JoiUtil';
+} from '../../../models/shared';
+import * as JoiUtil from '../../../utils/JoiUtil';
 
 export const emptyWalletParmsSchema = Joi.object().keys({});
 

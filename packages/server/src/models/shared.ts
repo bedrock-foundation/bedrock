@@ -44,4 +44,11 @@ export enum StatusCodes {
   GATEWAY_TIMEOUT = 504,
 }
 
+export interface TokenDataSummary {
+  name: string;
+  mint: string;
+  image?: string;
+  traits: Record<string, string | number>;
+}
+
 export const isSuccessfulResponse = (response: CreateTransactionResponse): boolean => response.status === StatusCodes.OK;

@@ -8,7 +8,9 @@ import {
 } from "@bedrock-foundation/react-sdk";
 import QRCode from 'react-qr-code';
 
-const { core: { createTransferLink, getReferenceStatus } } = new Bedrock();
+const {
+  core: { createTransferLink, getReferenceStatus },
+} = new Bedrock("https://magically-production.ngrok.io");
 
 function TransferExample() {
   const [signature, setSignature] = React.useState<string | null>(null);
@@ -19,6 +21,13 @@ function TransferExample() {
     wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
     size: 1,
     token: TokenTypes.USDC,
+    gate: {
+      collection: "SMBH3wF6baUj6JWtzYvqcKuj2XCKWDqQxzspY12xPND",
+      traits: {
+        Type: "Brown",
+        Clothes: "Orange Pants",
+      },
+    },
   });
 
   const {
@@ -27,6 +36,8 @@ function TransferExample() {
       requestRef
     },
   } = useCreateLink(createTransferLink, transferParams);
+
+  console.log(link);
 
   const { cancel } = usePollReferenceStatus(getReferenceStatus, {
       ref: requestRef,

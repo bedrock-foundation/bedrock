@@ -14,6 +14,7 @@ import {
 } from '@bedrock-foundation/sdk';
 import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
+import * as TokenGateUtil from '../../../utils/TokenGateUtil';
 import RPCConnection from '../../../utils/RPCConnection';
 import SolanaUtil, { TransferSplTokenParams } from '../../../utils/SolanaUtil';
 import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../../models/BaseTransactionRouter';
@@ -24,13 +25,21 @@ import {
   CreateTransactionResponse,
   StatusCodes,
   isSuccessfulResponse,
+  TokenDataSummary,
 } from '../../../models/shared';
 import * as JoiUtil from '../../../utils/JoiUtil';
+
+const tokenGate = Joi.object().keys({
+  collection: Joi.string().optional(),
+  traits: Joi.any(),
+  discountPercentage: Joi.number().optional(),
+});
 
 export const transferParamsSchema = Joi.object().keys({
   wallet: Joi.string().required(),
   token: Joi.string().required(),
   quantity: Joi.number().optional(),
+  gate: tokenGate,
   size: Joi.number().optional(),
   icon: Joi.string().optional(),
   label: Joi.string().optional(),
@@ -117,15 +126,38 @@ export class TransferRouter extends BaseTransactionRouter implements Transaction
       wallet,
       token,
       quantity,
+      gate,
       size,
       refs,
     } = params;
 
+    const customerPublicKey = new PublicKey(account);
+    const merchantPublicKey = new PublicKey(wallet);
+
+    /**
+      * Apply the access gate if one is specified
+      */
+    try {
+      const tokens: TokenDataSummary[] = gate ? await TokenGateUtil.applyAccessGate(gate, customerPublicKey) : [];
+
+      if (gate && tokens.length === 0) {
+        const errorMsg = 'User does not have required NFT.';
+        this.logger.error(errorMsg);
+        response.status = StatusCodes.UNAUTHORIZED;
+        response.error = new Error(errorMsg);
+        return response;
+      }
+    } catch (e: any) {
+      const errorMsg = e.message;
+      this.logger.error(e);
+      response.status = StatusCodes.INTERNAL_SERVER_ERROR;
+      response.error = new Error(errorMsg);
+      return response;
+    }
+
     /**
      * Create the transaction
      */
-    const customerPublicKey = new PublicKey(account);
-    const merchantPublicKey = new PublicKey(wallet);
     const ixs: TransactionInstruction[] = [];
 
     try {
