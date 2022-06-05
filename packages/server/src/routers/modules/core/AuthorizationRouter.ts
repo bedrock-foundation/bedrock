@@ -12,6 +12,7 @@ import {
   createNonceSocketTopic,
   BedrockCore,
   AuthorizationData,
+  TokenDataSummary,
 } from '@bedrock-foundation/sdk';
 import jwt from 'jsonwebtoken';
 import express from 'express';
@@ -19,6 +20,7 @@ import * as JSURL from '@bedrock-foundation/jsurl';
 import { RedisClientType } from 'redis';
 import { Server as SocketServer } from 'socket.io';
 import RPCConnection from '../../../utils/RPCConnection';
+import * as TokenGateUtil from '../../../utils/TokenGateUtil';
 import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../../models/BaseTransactionRouter';
 import {
   CreateTransactionRequest,
@@ -32,7 +34,14 @@ import {
 } from '../../../models/shared';
 import * as JoiUtil from '../../../utils/JoiUtil';
 
+const tokenGate = Joi.object().keys({
+  collection: Joi.string().optional(),
+  traits: Joi.any(),
+  discountPercentage: Joi.number().optional(),
+});
+
 export const authorizationParmsSchema = Joi.object().keys({
+  gate: tokenGate,
   refs: Joi.array().items(Joi.string()).default([]),
 });
 
@@ -154,7 +163,10 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
 
     const {
       refs,
+      gate,
     } = params;
+
+    console.log(gate);
 
     const ref = refs?.[0] ?? '';
     const nonce: string | undefined = await this.redis.hGet('nonces', ref);
@@ -168,16 +180,59 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
     }
 
     /**
-     * Broadcast the scan to the client
-     */
-    const nonceSocketTopic = createNonceSocketTopic(nonce);
+      * Apply the access gate if one is specified
+      */
     const customerPublicKey = new PublicKey(account);
     const wallet = customerPublicKey.toBase58();
+    const nonceSocketTopic = createNonceSocketTopic(nonce);
+    let tokens: TokenDataSummary[];
+
+    try {
+      tokens = gate ? await TokenGateUtil.applyAccessGate(gate, customerPublicKey) : [];
+
+      console.log(tokens);
+
+      if (gate && tokens.length === 0) {
+        /**
+         * Broadcast failure to client
+         */
+        const errorMsg = 'User does not have required NFT.';
+        const authorizationData: AuthorizationData = {
+          wallet,
+          status: TransactionStatuses.Error,
+          message: 'User does not have required NFT',
+          signature: null,
+          token: null,
+        };
+
+        this.io.emit(nonceSocketTopic, authorizationData);
+
+        /**
+         * Response with failure to wallet
+         */
+        this.logger.error(errorMsg);
+        response.status = StatusCodes.UNAUTHORIZED;
+        response.error = new Error(errorMsg);
+        return response;
+      }
+    } catch (e: any) {
+      const errorMsg = e.message;
+      this.logger.error(e);
+      response.status = StatusCodes.INTERNAL_SERVER_ERROR;
+      response.error = new Error(errorMsg);
+      return response;
+    }
+
+    /**
+     * Broadcast the scan to the client
+     */
     const authorizationData: AuthorizationData = {
       wallet,
       status: TransactionStatuses.Scanned,
+      message: 'User scanned QR code.',
       signature: null,
       token: null,
+      gate: tokens[0],
     };
 
     this.io.emit(nonceSocketTopic, authorizationData);
@@ -255,9 +310,11 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
 
                 const authorizationData: AuthorizationData = {
                   wallet,
+                  message: 'User successfully authenticated',
                   status: TransactionStatuses.Confirmed,
                   signature,
                   token: createJwt(signature, wallet),
+                  gate: tokens[0],
                 };
 
                 this.io.emit(nonceSocketTopic, authorizationData);

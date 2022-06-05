@@ -18,7 +18,11 @@ function AuthorizationExample() {
   const [error, setError] = React.useState<Error | null>(null);
 
   const { result } = useCreateNonceLink(createAuthorizationNonceLink, {
-    params: {},
+    params: {
+      gate: {
+        collection: "SMBH3wF6baUj6JWtzYvqcKuj2XCKWDqQxzspY12xPND",
+      },
+    },
     onComplete: (result) => {
       console.log(result);
     },
@@ -30,6 +34,7 @@ function AuthorizationExample() {
   useNonceSocket<AuthorizationData>({
     nonce: result?.nonce ?? "",
     onChange: (data: AuthorizationData) => {
+      console.log(data);
       setAuthData(data);
     },
     onError: setError,

@@ -10,6 +10,7 @@ import {
   TransferParams,
   TokenTypes,
   TokenInfo,
+  TokenDataSummary,
   BedrockCore,
 } from '@bedrock-foundation/sdk';
 import express from 'express';
@@ -25,7 +26,6 @@ import {
   CreateTransactionResponse,
   StatusCodes,
   isSuccessfulResponse,
-  TokenDataSummary,
 } from '../../../models/shared';
 import * as JoiUtil from '../../../utils/JoiUtil';
 

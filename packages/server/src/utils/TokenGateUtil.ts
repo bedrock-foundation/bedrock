@@ -1,8 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { Metaplex, JsonMetadataAttribute, Nft } from '@metaplex-foundation/js-next';
-import { TokenGate } from '@bedrock-foundation/sdk';
+import { TokenGate, TokenDataSummary } from '@bedrock-foundation/sdk';
 import RPCConnection from './RPCConnection';
-import { TokenDataSummary } from '../models/shared';
 
 const metaplex = Metaplex.make(RPCConnection);
 

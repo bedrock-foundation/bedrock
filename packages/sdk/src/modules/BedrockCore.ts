@@ -14,6 +14,13 @@ export interface TokenGate {
   discountPercentage?: number;
 }
 
+export interface TokenDataSummary {
+  name: string;
+  mint: string;
+  image?: string;
+  traits: Record<string, string | number>;
+}
+
 export type TransferParams = {
   wallet: string;
   token?: TokenTypes;
@@ -25,13 +32,17 @@ export type TransferParams = {
 
 export type EmptyWalletParams = {} & BaseTransactionRequestParams;
 
-export type AuthorizationParams = {} & BaseTransactionRequestParams;
+export type AuthorizationParams = {
+  gate?: TokenGate;
+} & BaseTransactionRequestParams;
 
 export type AuthorizationData = {
   wallet: string;
   status: TransactionStatuses,
   signature: string | null,
   token: string | null,
+  message?: string;
+  gate?: TokenDataSummary;
 }
 
 export type GetReferenceStatusParams = {
