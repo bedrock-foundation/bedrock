@@ -4,14 +4,14 @@ import {
 } from '@bedrock-foundation/sdk';
 import express from 'express';
 import { PublicKey } from '@solana/web3.js';
-import RPCConnection from '../../utils/RPCConnection';
+import RPCConnection from '../../../utils/RPCConnection';
 import {
   HTTPRequest,
   HTTPResponse,
   isSuccessfulResponse,
   StatusCodes,
-} from '../../models/shared';
-import * as JoiUtil from '../../utils/JoiUtil';
+} from '../../../models/shared';
+import * as JoiUtil from '../../../utils/JoiUtil';
 
 export const getReferenceStatusParamsSchema = Joi.object().keys({
   ref: Joi.string().required(),

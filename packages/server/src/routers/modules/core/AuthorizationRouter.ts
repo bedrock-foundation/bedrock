@@ -18,8 +18,8 @@ import express from 'express';
 import * as JSURL from '@bedrock-foundation/jsurl';
 import { RedisClientType } from 'redis';
 import { Server as SocketServer } from 'socket.io';
-import RPCConnection from '../../utils/RPCConnection';
-import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../models/BaseTransactionRouter';
+import RPCConnection from '../../../utils/RPCConnection';
+import { TransactionRouter, BaseTransactionRouter, TransactionRouterParams } from '../../../models/BaseTransactionRouter';
 import {
   CreateTransactionRequest,
   CreateTransactionResponse,
@@ -29,8 +29,8 @@ import {
   TransactionResponse,
   StatusCodes,
   isSuccessfulResponse,
-} from '../../models/shared';
-import * as JoiUtil from '../../utils/JoiUtil';
+} from '../../../models/shared';
+import * as JoiUtil from '../../../utils/JoiUtil';
 
 export const authorizationParmsSchema = Joi.object().keys({
   refs: Joi.array().items(Joi.string()).default([]),
