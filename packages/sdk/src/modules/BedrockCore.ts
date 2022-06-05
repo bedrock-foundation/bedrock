@@ -9,7 +9,9 @@ import {
 import { TokenTypes, TransactionStatuses } from '../models/shared';
 
 export interface TokenGate {
-  collection: string;
+  collectionId?: string;
+  firstCreatorId?: string;
+  updateAuthorityId?: string;
   traits?: Record<string, string | number>
   discountPercentage?: number;
 }

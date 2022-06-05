@@ -35,7 +35,9 @@ import {
 import * as JoiUtil from '../../../utils/JoiUtil';
 
 const tokenGate = Joi.object().keys({
-  collection: Joi.string().optional(),
+  collectionId: Joi.string().optional(),
+  firstCreatorId: Joi.string().optional(),
+  updateAuthorityId: Joi.string().optional(),
   traits: Joi.any(),
   discountPercentage: Joi.number().optional(),
 });

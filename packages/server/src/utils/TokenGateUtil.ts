@@ -6,19 +6,29 @@ import RPCConnection from './RPCConnection';
 const metaplex = Metaplex.make(RPCConnection);
 
 export async function applyAccessGate(gate: TokenGate, publicKey: PublicKey): Promise<TokenDataSummary[]> {
-  const { collection, traits } = gate;
+  const {
+    collectionId,
+    firstCreatorId,
+    updateAuthorityId,
+    traits,
+  } = gate;
   const nfts = await metaplex.nfts().findAllByOwner(publicKey);
 
-  const selectedNfts: Nft[] = (() => {
-    if (collection) {
-      return nfts.filter((nft) => {
-        const collectionId = nft?.collection?.key?.toBase58() ?? null;
-        return collectionId === collection;
-      });
+  const selectedNfts: Nft[] = nfts.filter((nft) => {
+    if (collectionId) {
+      return collectionId === nft?.collection?.key?.toBase58() ?? null;
     }
 
-    return [];
-  })();
+    if (firstCreatorId) {
+      return firstCreatorId === nft?.creators?.[0].address?.toBase58() ?? null;
+    }
+
+    if (updateAuthorityId) {
+      return updateAuthorityId === nft?.updateAuthority?.toBase58() ?? null;
+    }
+
+    return false;
+  });
 
   const convertTraits = (traits: Record<string, string | number>): string[] => {
     return Object.entries(traits).map(([key, value]) => {
