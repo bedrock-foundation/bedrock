@@ -12,6 +12,7 @@ type UseCreateNonceLinkConfig<T> = {
 
 type UseCreateNonceLink = {
   result: CreateNonceLinkResult | null;
+  loading: boolean;
   error: Error | null;
   cancel: () => void;
 }
@@ -21,6 +22,7 @@ export function useCreateNonceLink<T>(
   config: UseCreateNonceLinkConfig<T> = { params: {} as T },
 ): UseCreateNonceLink {
   const [result, setResult] = React.useState<CreateNonceLinkResult | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
   const cancel = React.useCallback((broadcast: boolean = true) => {
@@ -33,11 +35,14 @@ export function useCreateNonceLink<T>(
   React.useEffect(() => {
     const doEffect = async () => {
       try {
+        setLoading(true);
         const result = await createNonceLink(config.params);
+        setLoading(false);
         setResult(result);
         config?.onComplete?.(result);
         cancel(false);
       } catch (e: any) {
+        setLoading(false);
         console.error(e);
         setError(e as Error);
         config?.onError?.(e as Error);
@@ -45,10 +50,11 @@ export function useCreateNonceLink<T>(
       }
     };
     doEffect();
-  }, []);
+  }, [JSON.stringify(config.params)]);
 
   return {
     result,
+    loading,
     error,
     cancel,
   };
