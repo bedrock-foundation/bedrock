@@ -46,6 +46,7 @@
         "@bedrock-foundation/jsurl": "^1.0.1",
         "@bedrock-foundation/sdk": "^0.0.14",
         "@metaplex-foundation/js-next": "^0.9.0",
+        "@socket.io/redis-adapter": "^7.2.0",
         "@solana/pay": "^0.2.0",
         "@solana/spl-token": "^0.2.0",
         "@solana/web3.js": "1.37.0",

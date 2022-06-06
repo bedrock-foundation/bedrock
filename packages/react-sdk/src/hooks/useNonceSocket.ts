@@ -1,10 +1,12 @@
 import io from 'socket.io-client';
 import React from 'react';
 import {
+  Bedrock,
   createNonceSocketTopic,
 } from '@bedrock-foundation/sdk';
 
 type UseNonceSocketConfig<T> = {
+  bedrock: Bedrock;
   nonce: string | null
   onChange?: (data: T) => void,
   onError?: (error: Error) => void,
@@ -21,7 +23,7 @@ export function useNonceSocket<T>(config: UseNonceSocketConfig<T>): UseNonceSock
 
   React.useEffect(() => {
     if (config.nonce) {
-      const newSocket = io('http://localhost:3001');
+      const newSocket = io(config.bedrock.basePath);
       const nonceSocketTopic = createNonceSocketTopic(config.nonce);
 
       newSocket.on('connect', () => {
@@ -40,7 +42,7 @@ export function useNonceSocket<T>(config: UseNonceSocketConfig<T>): UseNonceSock
       };
     }
     return () => {};
-  }, [config.nonce]);
+  }, [config.nonce, config.bedrock.basePath]);
 
   return {
     data,
