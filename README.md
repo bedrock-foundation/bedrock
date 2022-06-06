@@ -103,7 +103,7 @@ function App() {
 
 We have a few channels for contact:
 
-- [Discord](https://discord.gg/qDJm4GP5)
+- [Discord](https://discord.gg/9vSSv9tyud)
 - [@on_bedrock](https://twitter.com/on_bedrock) on Twitter
 - [GitHub Issues](https://github.com/bedrock-foundation/bedrock/issues)
 
