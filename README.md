@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://bedrock.fyi">
-    <img alt="Bedrock Foundation" src="packages/marketing/public/bedrock-logo.png" style="background: black; padding: 10px" width="150" />
+    <img alt="Bedrock Foundation" src="https://storage.googleapis.com/bedrock-platform-assets-production-mainnet/brand/bedrock-logo.png" style="background: black; padding: 10px" width="150" />
   </a>
 </p>
 
