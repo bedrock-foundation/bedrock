@@ -1,6 +1,6 @@
 {
     "name": "@bedrock-foundation/sdk",
-    "version": "0.0.9",
+    "version": "0.0.15",
     "description": "Bedrock SDK",
     "private": false,
     "publishConfig": {

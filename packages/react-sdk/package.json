@@ -1,6 +1,6 @@
 {
     "name": "@bedrock-foundation/react-sdk",
-    "version": "0.0.9",
+    "version": "0.0.15",
     "description": "Bedrock React SDK",
     "private": false,
     "publishConfig": {
@@ -8,7 +8,7 @@
     },
     "type": "module",
     "sideEffects": false,
-    "main": "lib/cjs/index.js",
+    "main": "lib/esm/index.mjs",
     "module": "lib/esm/index.mjs",
     "types": "lib/types/index.d.ts",
     "files": [
@@ -29,7 +29,7 @@
         "watch": "npm run build",
         "dev": "npm-watch watch",
         "clean": "rm -rf lib/*",
-        "build": "tsc -p tsconfig.json && tsc-esm -p tsconfig.json && tsc -p tsconfig.cjs.json",
+        "build": "npm run clean && tsc -p tsconfig.json && tsc-esm -p tsconfig.json && tsc -p tsconfig.cjs.json",
         "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > lib/esm/package.json"
     },
     "watch": {
@@ -45,8 +45,9 @@
     "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
-        "@bedrock-foundation/sdk": "^0.0.9",
-        "react-qr-code": "^2.0.7"
+        "@bedrock-foundation/sdk": "^0.0.15",
+        "react-qr-code": "^2.0.7",
+        "socket.io-client": "^4.5.1"
     },
     "peerDependencies": {
         "react": "^18.0.0",

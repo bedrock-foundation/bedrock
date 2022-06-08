@@ -1,29 +1,16 @@
-import { TransferAction } from './actions/TransferAction';
-import { EmptyWalletAction } from './actions/EmptyWalletAction';
-import { PollReferenceStatus } from './status/PollReferenceStatus';
+import { BedrockCore } from './modules/BedrockCore';
 
 export class Bedrock {
   public readonly basePath: string;
 
-  public transfer: TransferAction;
-
-  public emptyWallet: EmptyWalletAction;
-
-  public pollReferenceStatus: PollReferenceStatus;
+  public core: BedrockCore;
 
   constructor(basePath?: string) {
     this.basePath = basePath ?? 'https://pay.bedrock.fyi';
     /**
-     * Actions
+     * modules
      */
 
-    this.transfer = new TransferAction(this.basePath);
-    this.emptyWallet = new EmptyWalletAction(this.basePath);
-
-    /**
-     * Status
-     */
-
-    this.pollReferenceStatus = new PollReferenceStatus(this.basePath);
+    this.core = new BedrockCore({ basePath: this.basePath });
   }
 }

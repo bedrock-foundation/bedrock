@@ -1,10 +1,10 @@
 {
   "packages": [
-    "packages/example/create-react-app",
+    "packages/example/react",
     "packages/example/express",
     "packages/react-sdk",
     "packages/sdk",
     "packages/server"
   ],
-  "version": "0.0.9"
+  "version": "0.0.15"
 }
