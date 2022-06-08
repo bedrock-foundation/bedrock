@@ -4,3 +4,5 @@ export * from './routers/modules/core/EmptyWalletRouter';
 export * from './routers/modules/core/AuthorizationRouter';
 export * from './routers/modules/core/GetReferenceStatusRouter';
 export * from './websocket/configureWebSocket';
+export * from './middleware/parseAuthorizationData';
+export * from './models/shared';

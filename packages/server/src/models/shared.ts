@@ -1,7 +1,10 @@
 import { JsUrl } from '@bedrock-foundation/jsurl';
+import { AuthorizationData } from '@bedrock-foundation/sdk';
 import { Request, Response } from 'express';
 
-export type HTTPRequest<PostBody, QueryStringParams> = Request<{}, {}, PostBody, QueryStringParams>;
+export interface HTTPRequest<PostBody, QueryStringParams> extends Request<{}, {}, PostBody, QueryStringParams> {
+  authorizationData?: any;
+}
 
 export type HTTPResponse<ResponseData> = Response<ResponseData>;
 
