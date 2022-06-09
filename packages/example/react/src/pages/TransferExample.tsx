@@ -12,7 +12,9 @@ const {
   core: { createTransferLink, getReferenceStatus },
 } = new Bedrock("https://magically-production.ngrok.io");
 
-function TransferExample() {
+type TransferExampleProps = {};
+
+const TransferExample: React.FC<TransferExampleProps> = ({}) => {
   const [signature, setSignature] = React.useState<string | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [canceled, setCanceled] = React.useState<boolean>(false);
@@ -21,32 +23,20 @@ function TransferExample() {
     wallet: "Exxuw5WdrazbVLDs2g2A5zg2fJ9cZjwRM6mZaGD8Mnsx",
     size: 1,
     token: TokenTypes.USDC,
-    gate: {
-      collection: "SMBH3wF6baUj6JWtzYvqcKuj2XCKWDqQxzspY12xPND",
-      traits: {
-        Type: "Brown",
-        Clothes: "Orange Pants",
-      },
-    },
   });
 
   const {
-    link, 
-    refs: { 
-      requestRef
-    },
+    link,
+    refs: { requestRef },
   } = useCreateLink(createTransferLink, transferParams);
 
-  console.log(link);
-
   const { cancel } = usePollReferenceStatus(getReferenceStatus, {
-      ref: requestRef,
-      onComplete: (data: any) => {
-        setSignature(data?.signature ?? null);
-      },
-      onError: setError,
-      onCancel: () => setCanceled(true),
-      interval: 5000,
+    ref: requestRef,
+    onComplete: (data) => {
+      setSignature(data?.signature ?? null);
+    },
+    onError: setError,
+    onCancel: () => setCanceled(true),
   });
 
   return (
@@ -60,6 +50,6 @@ function TransferExample() {
       <div onClick={() => cancel()}>Cancel</div>
     </div>
   );
-}
+};
 
 export default TransferExample;
