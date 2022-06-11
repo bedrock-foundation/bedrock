@@ -54,6 +54,7 @@ module.exports = {
     'no-plusplus': 0,
     'linebreak-style': 0,
     semi: [2, 'always'],
+    'comma-dangle': [2, 'only-multiline'],
 
     // should fix these ones
     'no-console': 0,
