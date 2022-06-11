@@ -61,21 +61,25 @@ export type CreateAuthorizationTransactionResponse = CreateTransactionResponse;
 export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 
 export type AuthorizationRouterParams = TransactionRouterParams & {
+  jwtSecret: string;
   redis: RedisClientType;
   io: any;
 }
 
 export class AuthorizationRouter extends BaseTransactionRouter implements TransactionRouter<CreateAuthorizationTransactionRequest> {
+  public noncePath: string;
+
+  private jwtSecret: string;
+
   private redis: RedisClientType;
 
   private io: SocketServer;
-
-  public noncePath: string;
 
   constructor(params: AuthorizationRouterParams) {
     super(params);
     this.path = BedrockCore.Paths.Authorization;
     this.noncePath = BedrockCore.Paths.AuthorizationNonce;
+    this.jwtSecret = params.jwtSecret;
     this.router = express.Router();
     this.redis = params.redis;
     this.io = params.io;
@@ -296,7 +300,7 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
             signature,
             wallet,
           },
-          'BEDROCK_AUTHORIZATION_SECRET',
+          this.jwtSecret,
         );
       };
 
