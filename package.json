@@ -2,12 +2,12 @@
   "name": "bedrock",
   "private": true,
   "scripts": {
-    "build": "yarn workspaces foreach -pitv run build",
-    "dev": "yarn workspaces foreach -piv run dev",
-    "dev:lib": "yarn workspaces foreach -piv --no-private run dev",
-    "build:lib": "yarn workspaces foreach -pitv --no-private run build",
-    "publish": "yarn workspaces foreach -pv --no-private npm publish --tolerate-republish",
-    "clean": "yarn workspaces foreach -pt run clean",
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --stream --parallel dev",
+    "dev:lib": "pnpm -r --stream --parallel --filter=!./packages/example/** dev",
+    "build:lib": "pnpm -r --filter=!./packages/example/** build",
+    "publish": "pnpm -r --filter=!./packages/example/** publish --tolerate-republish",
+    "clean": "pnpm -r clean",
     "clean:node": "rm -rf node_modules; rm -rf packages/*/node_modules; rm -rf packages/example/*/node_modules",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
@@ -23,17 +23,5 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^4.3.8",
     "react": "17.0.1"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/sdk",
-      "packages/react-sdk",
-      "packages/server",
-      "packages/example/create-react-app",
-      "packages/example/express",
-      "packages/example/nextjs",
-      "packages/marketing"
-    ]
-  },
-  "packageManager": "yarn@3.2.1"
+  }
 }

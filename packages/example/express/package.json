@@ -27,8 +27,8 @@
     "author": "sam@bedrock.fyi",
     "license": "ISC",
     "dependencies": {
-        "@bedrock-foundation/sdk": "workspace:^",
-        "@bedrock-foundation/server": "workspace:^",
+        "@bedrock-foundation/sdk": "workspace:*",
+        "@bedrock-foundation/server": "workspace:*",
         "@metaplex-foundation/js-next": "^0.9.0",
         "@solana/pay": "^0.2.0",
         "@solana/spl-token": "^0.2.0",
