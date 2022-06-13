@@ -5,6 +5,7 @@ node_modules/
 .DS_Store
 .vscode
 lerna-debug.log
+.pnpm-debug.log
 **/db
 .env
 .next
