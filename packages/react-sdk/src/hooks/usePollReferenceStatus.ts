@@ -4,33 +4,36 @@ import { useInterval } from './useInterval';
 
 type UsePollReferenceStatusConfig = {
   ref: string;
-  onComplete?: (data: any) => void,
-  onError?: (error: Error) => void,
-  onCancel?: () => void,
+  onComplete?: (data: any) => void;
+  onError?: (error: Error) => void;
+  onCancel?: () => void;
   interval?: number;
-}
+};
 
 type UsePollReferenceStatus = {
   data: any | null;
   error: Error | null;
   cancel: () => void;
-}
+};
 
 const DEFAULT_INTERVAL = 5000;
 
 export function usePollReferenceStatus(
-  getReferenceStatus: (params: GetReferenceStatusParams)=> Promise<StatusData>,
-  config: UsePollReferenceStatusConfig,
+  getReferenceStatus: (params: GetReferenceStatusParams) => Promise<StatusData>,
+  config: UsePollReferenceStatusConfig
 ): UsePollReferenceStatus {
   const [data, setData] = React.useState<StatusData | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
   const [isPolling, setIsPolling] = React.useState<boolean>(true);
-  const cancel = React.useCallback((broadcast: boolean = true) => {
-    setIsPolling(false);
-    if (broadcast) {
-      config?.onCancel?.();
-    }
-  }, [isPolling]);
+  const cancel = React.useCallback(
+    (broadcast: boolean = true) => {
+      setIsPolling(false);
+      if (broadcast) {
+        config?.onCancel?.();
+      }
+    },
+    [isPolling]
+  );
 
   useInterval(
     async () => {
@@ -49,12 +52,12 @@ export function usePollReferenceStatus(
       }
     },
     config.interval ?? DEFAULT_INTERVAL,
-    isPolling,
+    isPolling
   );
 
   return {
     data,
     error,
-    cancel,
+    cancel
   };
 }

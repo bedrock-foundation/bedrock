@@ -3,7 +3,8 @@
   "version": "0.0.15",
   "private": true,
   "dependencies": {
-    "@bedrock-foundation/react-sdk": "^0.0.15",
+    "@bedrock-foundation/react-sdk": "workspace:*",
+    "@bedrock-foundation/sdk": "workspace:*",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -26,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "clean": "rm -rf build"
   },
   "eslintConfig": {
     "extends": [

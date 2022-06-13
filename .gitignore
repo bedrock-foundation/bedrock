@@ -6,3 +6,7 @@ node_modules/
 .vscode
 lerna-debug.log
 **/db
+.env
+.next
+
+*.log
