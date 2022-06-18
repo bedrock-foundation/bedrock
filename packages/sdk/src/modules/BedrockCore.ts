@@ -39,7 +39,7 @@ export type AuthorizationParams = {
 } & BaseTransactionRequestParams;
 
 export type AuthorizationData = {
-  wallet: string;
+  accountId: string;
   status: TransactionStatuses,
   signature: string | null,
   token: string | null,

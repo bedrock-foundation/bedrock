@@ -6,3 +6,4 @@ export * from './routers/modules/core/GetReferenceStatusRouter';
 export * from './websocket/configureWebSocket';
 export * from './middleware/parseAuthorizationData';
 export * from './models/shared';
+export * from './utils/SolanaUtil';

@@ -172,8 +172,6 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
       gate,
     } = params;
 
-    console.log(gate);
-
     const ref = refs?.[0] ?? '';
     const nonce: string | undefined = await this.redis.hGet('nonces', ref);
 
@@ -189,14 +187,11 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
       * Apply the access gate if one is specified
       */
     const customerPublicKey = new PublicKey(account);
-    const wallet = customerPublicKey.toBase58();
     const nonceSocketTopic = createNonceSocketTopic(nonce);
     let tokens: TokenDataSummary[];
 
     try {
       tokens = gate ? await TokenGateUtil.applyAccessGate(gate, customerPublicKey) : [];
-
-      console.log(tokens);
 
       if (gate && tokens.length === 0) {
         /**
@@ -204,7 +199,7 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
          */
         const errorMsg = 'User does not have required NFT.';
         const authorizationData: AuthorizationData = {
-          wallet,
+          accountId: account,
           status: TransactionStatuses.Error,
           message: 'User does not have required NFT',
           signature: null,
@@ -233,7 +228,7 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
      * Broadcast the scan to the client
      */
     const authorizationData: AuthorizationData = {
-      wallet,
+      accountId: account,
       status: TransactionStatuses.Scanned,
       message: 'User scanned QR code.',
       signature: null,
@@ -294,11 +289,11 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
         verifySignatures: false,
       });
 
-      const createJwt = (signature: string, wallet: string) => {
+      const createJwt = (signature: string, accountId: string) => {
         return jwt.sign(
           {
             signature,
-            wallet,
+            accountId,
           },
           this.jwtSecret,
         );
@@ -315,11 +310,11 @@ export class AuthorizationRouter extends BaseTransactionRouter implements Transa
                 const signature = signatures[0].signature;
 
                 const authorizationData: AuthorizationData = {
-                  wallet,
+                  accountId: account,
                   message: 'User successfully authenticated',
                   status: TransactionStatuses.Confirmed,
                   signature,
-                  token: createJwt(signature, wallet),
+                  token: createJwt(signature, account),
                   gate: tokens[0],
                 };
 

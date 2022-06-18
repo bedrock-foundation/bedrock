@@ -23,9 +23,11 @@ export const createParseAuthorizationData = (jwtSecret: string) => (request: HTT
     jwt.verify(token, jwtSecret, (error, data: any) => {
       if (error) {
         console.error(error);
-      } else if (data?._id) {
+      } else if (data?.accountId) {
+        const authData = data as AuthorizationData;
         request.authorizationData = {
-          accountId: data?.accountId?.toString() ?? undefined,
+          accountId: authData?.accountId?.toString() ?? undefined,
+          signature: authData?.signature?.toString() ?? undefined,
           ipAddress: request.headers?.['x-real-ip'] ?? 'localhost',
           token,
         };
