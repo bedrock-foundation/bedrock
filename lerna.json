@@ -1,8 +1,10 @@
 {
   "packages": [
+    "packages/example/react",
+    "packages/example/express",
     "packages/react-sdk",
     "packages/sdk",
     "packages/server"
   ],
-  "version": "0.0.18"
+  "version": "0.0.17"
 }
