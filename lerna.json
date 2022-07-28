@@ -1,7 +1,5 @@
 {
   "packages": [
-    "packages/example/react",
-    "packages/example/express",
     "packages/react-sdk",
     "packages/sdk",
     "packages/server"
