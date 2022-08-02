@@ -1,6 +1,6 @@
 {
   "name": "@bedrock-foundation/example-create-react-app",
-  "version": "0.0.17",
+  "version": "0.0.19",
   "private": true,
   "dependencies": {
     "@bedrock-foundation/react-sdk": "^0.0.17",
