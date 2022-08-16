@@ -1,6 +1,6 @@
 {
     "name": "@bedrock-foundation/sdk",
-    "version": "0.0.19",
+    "version": "0.0.20",
     "description": "Bedrock SDK",
     "private": false,
     "publishConfig": {
@@ -44,13 +44,15 @@
     },
     "author": "sam@bedrock.fyi",
     "license": "ISC",
+    "peerDependencies": {
+        "@solana/web3.js": "1.36.0"
+    },
     "dependencies": {
         "@bedrock-foundation/jsurl": "^1.0.1",
         "@ethersproject/sha2": "^5.6.0",
         "@metaplex-foundation/mpl-token-metadata": "^2.1.0",
         "@solana/pay": "^0.2.0",
         "@solana/spl-token": "^0.2.0",
-        "@solana/web3.js": "1.36.0",
         "bignumber.js": "^9.0.2",
         "bs58": "^5.0.0",
         "buffer": "^6.0.3",
